@@ -3,36 +3,185 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GTA RP Karte</title>
+  <title>NCPD2-PA Karte</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body, #map { height: 100%; margin: 0; }
     .popup-title { font-weight: 700; margin-bottom: 4px; }
     .popup-meta { opacity: 0.85; font-size: 13px; }
+    .hud {
+      position: absolute;
+      z-index: 9999;
+      left: 10px;
+      bottom: 10px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font: 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      backdrop-filter: blur(6px);
+      max-width: 320px;
+    }
+    .hud b { font-weight: 700; }
+    .hud .small { opacity: 0.85; font-size: 12px; margin-top: 4px; }
+    .hud code {
+      background: rgba(255,255,255,0.12);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
 <div id="map"></div>
+<div class="hud" id="hud">
+  <div><b>Klick-Koordinaten:</b> <span id="xy">—</span></div>
+  <div class="small">Tipp: Auf die Karte klicken → x/y unten links kopieren (auch in der Konsole).</div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // Pixel-/Bild-Karte (kein echtes GPS)
-  const map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4 });
+  // ====== 1) Karte initialisieren (Simple CRS = Bild-/Pixel-Karte) ======
+  const map = L.map('map', {
+    crs: L.CRS.Simple,
+    minZoom: -2,
+    maxZoom: 5
+  });
 
-  // WICHTIG: Trage hier die Pixelgröße deiner map.png ein
+  // ====== 2) Basemap als Bild ======
+  // WICHTIG: Hier die echte Pixelgröße deiner map.png eintragen!
+  // Beispiele: 4096/4096 oder 8192/8192
   const IMG_W = 2048;
   const IMG_H = 2048;
 
-  const bounds = [[0, 0], [IMG_H, IMG_W]]; // [y,x]
+  const bounds = [[0, 0], [IMG_H, IMG_W]]; // Leaflet Simple CRS nutzt [y, x]
   L.imageOverlay('map.png', bounds).addTo(map);
   map.fitBounds(bounds);
 
-  // POI-Layer
-  const poiLayer = L.layerGroup().addTo(map);
+  // HUD für Klick-Koordinaten
+  const xyEl = document.getElementById('xy');
+  map.on('click', (e) => {
+    const x = Math.round(e.latlng.lng);
+    const y = Math.round(e.latlng.lat);
+    xyEl.innerHTML = `<code>x: ${x}</code> <code>y: ${y}</code>`;
+    console.log(`KLICK -> x: ${x}, y: ${y}`);
+  });
 
-  // Layer Switch
-  L.control.layers({}, { "POIs": poiLayer }, { collapsed: false }).addTo(map);
+  // ====== 3) Layer: Viertel (optional) ======
+  // Lädt nur, wenn districts.geojson existiert
+  const districtLayer = L.geoJSON(null, {
+    style: (feature) => ({
+      weight: 1,
+      opacity: 0.8,
+      fillOpacity: 0.18, // blass
+      fillColor: feature?.properties?.color || "#ffffff"
+    }),
+    onEachFeature: (feature, layer) => {
+      const name = feature?.properties?.name || "Viertel";
+      layer.bindPopup(`<div class="popup-title">${name}</div>`);
+    }
+  });
+
+  fetch('districts.geojson')
+    .then(r => {
+      if (!r.ok) throw new Error('districts.geojson nicht gefunden');
+      return r.json();
+    })
+    .then(data => districtLayer.addData(data))
+    .catch(() => {
+      // Kein Problem, wenn du (noch) keine Viertel-Datei hast.
+    });
+
+  // ====== 4) POI Layer nach Kategorien ======
+  const layersByCategory = new Map(); // category -> LayerGroup
+  const overlayLayersForControl = {}; // Name -> Layer (für Layer-Switch)
+
+  function getCategoryLayer(category) {
+    const key = (category || 'Sonstiges').trim() || 'Sonstiges';
+    if (!layersByCategory.has(key)) {
+      const lg = L.layerGroup();
+      layersByCategory.set(key, lg);
+      overlayLayersForControl[`POIs: ${key}`] = lg;
+      // Standard: neue Kategorie direkt anzeigen
+      lg.addTo(map);
+    }
+    return layersByCategory.get(key);
+  }
+
+  function makePopupHtml(p) {
+    const title = p.name ?? 'POI';
+    const desc = p.desc ?? '';
+    const cat = p.category ?? 'Sonstiges';
+    const extra = p.info ? `<div class="popup-meta">${p.info}</div>` : '';
+    return `
+      <div class="popup-title">${title}</div>
+      ${desc ? `<div class="popup-meta">${desc}</div>` : ''}
+      <div class="popup-meta">Kategorie: ${cat}</div>
+      ${extra}
+    `;
+  }
+
+  // ====== 5) POIs laden ======
+  fetch('pois.json')
+    .then(r => r.json())
+    .then(pois => {
+      for (const p of pois) {
+        if (typeof p.x !== 'number' || typeof p.y !== 'number') continue;
+
+        const layer = getCategoryLayer(p.category);
+
+        // Marker
+        const marker = L.marker([p.y, p.x]);
+        marker.bindPopup(makePopupHtml(p));
+
+        // Optional: Tooltip beim Hover
+        if (p.name) marker.bindTooltip(p.name, { direction: 'top', offset: [0, -10] });
+
+        marker.addTo(layer);
+      }
+    })
+    .catch(() => console.warn('pois.json nicht gefunden oder ungültig'));
+
+  // ====== 6) Layer Switcher ======
+  // Hinweis: districtLayer erscheint auch, wenn leer; stört nicht.
+  const layersControl = L.control.layers(
+    {},
+    {
+      "Stadtviertel": districtLayer,
+      ...overlayLayersForControl
+    },
+    { collapsed: false }
+  ).addTo(map);
+
+  // Da Kategorien dynamisch nachgeladen werden, müssen wir den Control updaten,
+  // sobald pois.json geladen wurde. Einfach alle 1s kurz refreshen (leicht & stabil).
+  // (Alternative: eigenes Event-System; für GitHub Pages MVP reicht das so.)
+  const refreshInterval = setInterval(() => {
+    // Leaflet hat keinen offiziellen "refresh" des Control,
+    // daher bauen wir ihn neu, wenn sich Kategorien ändern.
+    // Wir erkennen Änderungen über die Anzahl der Kategorien.
+    if (!window.__lastCatCount) window.__lastCatCount = 0;
+    const current = layersByCategory.size;
+
+    if (current !== window.__lastCatCount) {
+      window.__lastCatCount = current;
+
+      try { map.removeControl(layersControl); } catch {}
+      L.control.layers(
+        {},
+        {
+          "Stadtviertel": districtLayer,
+          ...overlayLayersForControl
+        },
+        { collapsed: false }
+      ).addTo(map);
+    }
+
+    // Stoppe nach 20 Sekunden (danach sind POIs sicher geladen)
+    if (!window.__ticks) window.__ticks = 0;
+    window.__ticks++;
+    if (window.__ticks > 20) clearInterval(refreshInterval);
+  }, 1000);
 </script>
 </body>
 </html>
