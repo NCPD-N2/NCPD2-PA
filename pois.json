@@ -3,14 +3,14 @@
     "name": "Vespucci PD",
     "desc": "Test",
     "x": 761,
-    "y": 532
+    "y": 532,
     "category": "Wichtige Orte"
   },
   {
     "name": "Mission Row PD",
     "desc": "Polizeistation",
     "x": 1013,
-    "y": 502
+    "y": 502,
     "category": "Wichtige Orte"
   }
 ]
