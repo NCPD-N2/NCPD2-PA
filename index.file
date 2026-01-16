@@ -21,8 +21,8 @@
   const map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4 });
 
   // WICHTIG: Trage hier die Pixelgröße deiner map.png ein
-  const IMG_W = 4096;
-  const IMG_H = 4096;
+  const IMG_W = 2048;
+  const IMG_H = 2048;
 
   const bounds = [[0, 0], [IMG_H, IMG_W]]; // [y,x]
   L.imageOverlay('map.png', bounds).addTo(map);
