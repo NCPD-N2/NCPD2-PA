@@ -31,18 +31,6 @@
   // POI-Layer
   const poiLayer = L.layerGroup().addTo(map);
 
-  // Beispiel-POIs (später aus pois.json)
-  const pois = [
-    { name: "Pillbox Hospital", desc: "EMS", x: 2000, y: 2100 },
-    { name: "Mission Row PD", desc: "Police", x: 2300, y: 1800 }
-  ];
-
-  for (const p of pois) {
-    L.marker([p.y, p.x]).bindPopup(
-      `<div class="popup-title">${p.name}</div><div class="popup-meta">${p.desc}</div>`
-    ).addTo(poiLayer);
-  }
-
   // Layer Switch
   L.control.layers({}, { "POIs": poiLayer }, { collapsed: false }).addTo(map);
 </script>
