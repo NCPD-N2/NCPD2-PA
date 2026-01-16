@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Pillbox Hospital",
+    "desc": "Krankenhaus / EMS",
+    "x": 3900,
+    "y": 4800,
+    "category": "ems"
+  },
+  {
+    "name": "Mission Row PD",
+    "desc": "Polizeistation",
+    "x": 4200,
+    "y": 5100,
+    "category": "police"
+  }
+]
