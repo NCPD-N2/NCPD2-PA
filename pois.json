@@ -1,16 +1,16 @@
 [
   {
-    "name": "Pillbox Hospital",
-    "desc": "Krankenhaus / EMS",
-    "x": 3900,
-    "y": 4800,
-    "category": "ems"
+    "name": "Vespucci PD",
+    "desc": "Test",
+    "x": 761,
+    "y": 532,
+    "category": "Wichtige Orte"
   },
   {
     "name": "Mission Row PD",
     "desc": "Polizeistation",
-    "x": 4200,
-    "y": 5100,
-    "category": "police"
+    "x": 1013,
+    "y": 502,
+    "category": "Wichtige Orte"
   }
 ]
