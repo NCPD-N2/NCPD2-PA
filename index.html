@@ -6,183 +6,45 @@
   <title>Narco City – Interaktive Karte</title>
 
   <style>
-    :root {
-      --blue-dark: #08162f;
-      --blue-main: #0a1a3a;
-      --blue-light: #2d5aa8;
+    :root{
+      --bg0:#071326;
+      --bg1:#0a1a3a;
+      --bg2:#2d5aa8;
 
-      --card-dark: #0e2346;
-      --card-light: #143a73;
+      /* matte tile-farben */
+      --tile0:#0b0f16;   /* fast schwarz */
+      --tile1:#131a24;   /* dunkelgrau */
+      --tileBorder: rgba(255,255,255,.06);
 
-      /* 🔥 stärkere Glow-Farben */
-      --glow-police: rgba(80, 145, 255, 0.85);
-      --glow-academy: rgba(220, 180, 90, 0.85);
+      /* glow farben */
+      --glow-police: rgba(80,145,255,.90);
+      --glow-academy: rgba(220,180,90,.90);
     }
 
-    * { box-sizing: border-box; }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:#fff; }
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: #fff;
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
       background:
-        radial-gradient(circle at top, var(--blue-light) 0%, var(--blue-main) 55%),
-        linear-gradient(135deg, var(--blue-light), var(--blue-dark));
-      overflow: hidden;
+        radial-gradient(circle at top, var(--bg2) 0%, var(--bg1) 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg0));
+      overflow:hidden;
     }
 
-    /* ===== Layout ===== */
-    .container {
-      text-align: center;
-      max-width: 960px;
-      width: 100%;
-      padding: 40px 20px;
-      animation: fadeUp 700ms ease both;
-    }
-
-    h1 {
-      font-size: 34px;
-      letter-spacing: 1px;
-      margin-bottom: 50px;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      position: relative;
-      width: 280px;
-      padding: 30px;
-      border-radius: 26px;
-      cursor: pointer;
-
-      background: linear-gradient(145deg, var(--card-light), var(--card-dark));
-      box-shadow:
-        0 18px 40px rgba(0,0,0,.55),
-        inset 0 0 0 1px rgba(255,255,255,.08);
-
-      transition: transform .25s ease, box-shadow .25s ease;
-      opacity: 0;
-      animation: fadeUp 700ms ease both;
-      user-select: none;
-    }
-
-    .card:nth-child(1) { animation-delay: 220ms; }
-    .card:nth-child(2) { animation-delay: 360ms; }
-
-    .card img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 18px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.7));
-    }
-
-    .card span {
-      display: block;
-      font-size: 15px;
-      letter-spacing: .6px;
-      opacity: .95;
-    }
-
-    footer {
-      margin-top: 55px;
-      font-size: 13px;
-      opacity: .6;
-    }
-
-    /* ===== Glow Layer ===== */
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -6px;
-      border-radius: 30px;
-      pointer-events: none;
-      opacity: 0;
-      filter: blur(22px);
-      transition: opacity .25s ease;
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      border-radius: 24px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .25s ease;
-      box-shadow: inset 0 0 18px rgba(255,255,255,.25);
-    }
-
-    .card.police::before {
-      background: radial-gradient(circle at 30% 20%, var(--glow-police), transparent 65%);
-    }
-
-    .card.academy::before {
-      background: radial-gradient(circle at 30% 20%, var(--glow-academy), transparent 65%);
-    }
-
-    /* ===== Hover ===== */
-    .card:hover {
-      transform: translateY(-8px) scale(1.04);
-    }
-
-    .card:hover::before,
-    .card:hover::after {
-      opacity: 1;
-    }
-
-    .card.police:hover {
-      box-shadow:
-        0 0 55px var(--glow-police),
-        0 30px 60px rgba(0,0,0,.75),
-        inset 0 0 0 1px rgba(255,255,255,.12);
-    }
-
-    .card.academy:hover {
-      box-shadow:
-        0 0 55px var(--glow-academy),
-        0 30px 60px rgba(0,0,0,.75),
-        inset 0 0 0 1px rgba(255,255,255,.12);
-    }
-
-    /* 🔥 dezenter Puls */
-    .card:hover {
-      animation: pulse 1.8s ease-in-out infinite alternate;
-    }
-
-    /* ===== Animations ===== */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); filter: blur(2px); }
-      to   { opacity: 1; transform: translateY(0);  filter: blur(0); }
-    }
-
-    @keyframes pulse {
-      from { filter: brightness(1); }
-      to   { filter: brightness(1.08); }
-    }
-
+    /* ===== Metallic sweep ===== */
     @keyframes sweep {
       from { transform: translateX(-140%) rotate(12deg); opacity: 0; }
       20%  { opacity: 1; }
       to   { transform: translateX(140%) rotate(12deg); opacity: 0; }
     }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: -40%;
-      pointer-events: none;
+    body::after{
+      content:"";
+      position:fixed;
+      inset:-40%;
+      pointer-events:none;
       background: linear-gradient(
         90deg,
         rgba(255,255,255,0) 0%,
@@ -193,26 +55,215 @@
       );
       mix-blend-mode: screen;
       animation: sweep 1100ms ease-out 1 both;
+      z-index: 2;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
+    /* ===== Page enter ===== */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(18px); filter: blur(2px); }
+      to   { opacity:1; transform: translateY(0);  filter: blur(0); }
+    }
+
+    .container{
+      text-align:center;
+      max-width:960px;
+      width:100%;
+      padding:40px 20px;
+      animation: fadeUp 700ms ease both;
+      position:relative;
+      z-index:3;
+    }
+
+    h1{
+      font-size:34px;
+      letter-spacing:1px;
+      margin:0 0 50px;
+    }
+
+    .buttons{
+      display:flex;
+      justify-content:center;
+      gap:40px;
+      flex-wrap:wrap;
+    }
+
+    /* ===== Matte tiles ===== */
+    .card{
+      position:relative;
+      width:280px;
+      padding:30px;
+      border-radius:26px;
+      cursor:pointer;
+
+      /* matt: kaum highlights, keine glänzenden gradients */
+      background: linear-gradient(180deg, var(--tile1), var(--tile0));
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.65),
+        inset 0 0 0 1px var(--tileBorder);
+
+      transition: transform .20s ease, box-shadow .20s ease, filter .20s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+
+      opacity:0;
+      animation: fadeUp 700ms ease both;
+    }
+
+    .card:nth-child(1){ animation-delay: 220ms; }
+    .card:nth-child(2){ animation-delay: 360ms; }
+
+    .card img{
+      max-width:100%;
+      height:auto;
+      margin-bottom:18px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.75));
+    }
+
+    .card span{
+      display:block;
+      font-size:15px;
+      letter-spacing:.6px;
+      opacity:.92;
+    }
+
+    footer{
+      margin-top:55px;
+      font-size:13px;
+      opacity:.6;
+    }
+
+    /* ===== Stronger glow (hover) ===== */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-8px;
+      border-radius:32px;
+      pointer-events:none;
+      opacity:0;
+      filter: blur(26px);
+      transition: opacity .20s ease;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius:24px;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .20s ease;
+      box-shadow: inset 0 0 22px rgba(255,255,255,.10);
+    }
+
+    .card.police::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-police), rgba(0,0,0,0) 68%);
+    }
+    .card.academy::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-academy), rgba(0,0,0,0) 68%);
+    }
+
+    .card:hover{
+      transform: translateY(-8px) scale(1.03);
+      filter: brightness(1.05);
+    }
+    .card:hover::before,
+    .card:hover::after{ opacity:1; }
+
+    .card.police:hover{
+      box-shadow:
+        0 0 70px var(--glow-police),
+        0 30px 60px rgba(0,0,0,.78),
+        inset 0 0 0 1px rgba(255,255,255,.10);
+    }
+    .card.academy:hover{
+      box-shadow:
+        0 0 70px var(--glow-academy),
+        0 30px 60px rgba(0,0,0,.78),
+        inset 0 0 0 1px rgba(255,255,255,.10);
+    }
+
+    /* ===== Click "press" feedback ===== */
+    .card:active{
+      transform: translateY(-2px) scale(0.995);
+      filter: brightness(0.98);
+    }
+
+    /* ===== Fullscreen Transition Overlay ===== */
+    .transition{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:0;
+      transform: scale(1.02);
+      transition: opacity 260ms ease, transform 260ms ease;
+      z-index:9999;
+      display:grid;
+      place-items:center;
+    }
+
+    .transition .badge{
+      width:min(440px,80vw);
+      height:min(440px,80vw);
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.14), rgba(255,255,255,0) 55%);
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.80),
+        inset 0 0 0 1px rgba(255,255,255,.10);
+      opacity:.88;
+      transform: scale(.95);
+      transition: transform 260ms ease;
+    }
+
+    body.is-transitioning .transition{
+      opacity:1;
+      transform: scale(1);
+    }
+    body.is-transitioning .transition .badge{
+      transform: scale(1);
+    }
+
+    .transition.police{
+      background:
+        radial-gradient(circle at 30% 20%, rgba(80,145,255,.32), rgba(10,26,58,.985) 58%),
+        linear-gradient(135deg, rgba(80,145,255,.14), rgba(7,19,38,.985));
+    }
+    .transition.academy{
+      background:
+        radial-gradient(circle at 30% 20%, rgba(220,180,90,.28), rgba(10,26,58,.985) 58%),
+        linear-gradient(135deg, rgba(220,180,90,.12), rgba(7,19,38,.985));
+    }
+
+    body.is-transitioning .container{
+      filter: blur(2px);
+      transform: scale(0.985);
+      opacity: 0.70;
+      transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none !important; transition:none !important; }
+      body.is-transitioning .container{ filter:none; transform:none; opacity:1; }
     }
   </style>
 </head>
 
 <body>
 
+  <div class="transition" id="transition">
+    <div class="badge" aria-hidden="true"></div>
+  </div>
+
   <div class="container">
     <h1>Narco City – Interaktive Karte</h1>
 
     <div class="buttons">
-      <div class="card police" onclick="location.href='map.html'">
+      <div class="card police" data-theme="police" data-target="map.html" role="button" tabindex="0" aria-label="Police Department Karte öffnen">
         <img src="logos/ncpd.png" alt="NCPD">
         <span>Police Department Karte</span>
       </div>
 
-      <div class="card academy" onclick="location.href='map.html'">
+      <div class="card academy" data-theme="academy" data-target="map.html" role="button" tabindex="0" aria-label="Executive Education Academy Karte öffnen">
         <img src="logos/academy.png" alt="Academy">
         <span>Executive Education Academy</span>
       </div>
@@ -220,6 +271,42 @@
 
     <footer>© Narco City RP</footer>
   </div>
+
+  <script>
+    const transitionEl = document.getElementById('transition');
+
+    function goTo(target, theme) {
+      // overlay theme
+      transitionEl.classList.remove('police', 'academy');
+      transitionEl.classList.add(theme);
+
+      // start transition
+      document.body.classList.add('is-transitioning');
+
+      // redirect after a short visible animation
+      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const delay = reduced ? 0 : 320;
+
+      setTimeout(() => {
+        window.location.href = target;
+      }, delay);
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+      const target = card.getAttribute('data-target') || 'map.html';
+      const theme = card.getAttribute('data-theme') || 'police';
+
+      card.addEventListener('click', () => goTo(target, theme));
+
+      // keyboard access (Enter/Space)
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goTo(target, theme);
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
