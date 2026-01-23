@@ -18,9 +18,9 @@
       --tileBorder: rgba(255,255,255,.06);
 
       /* FINAL Farben */
-      --glow-police: rgba(55, 110, 220, 1);     /* Button 1: Blau (stärker) */
-      --glow-academy: rgba(70, 170, 120, 1);    /* Button 2: Grün (stärker) */
-      --glow-sd: rgba(210, 170, 45, 0.95);      /* Button 3: Gelb (Referenz) */
+      --glow-police: rgba(55, 110, 220, 1);     /* Button 1: Blau */
+      --glow-academy: rgba(70, 170, 120, 1);    /* Button 2: Grün */
+      --glow-sd: rgba(210, 170, 45, 0.95);      /* Button 3: Gelb */
 
       --glow-police-soft: rgba(55, 110, 220, 0.55);
       --glow-academy-soft: rgba(70, 170, 120, 0.55);
@@ -195,6 +195,8 @@
     .panel{
       width:min(1100px, 100%);
       padding: 0 6px;
+      position:relative;
+      z-index:2;
     }
 
     .panel-head{
@@ -226,6 +228,17 @@
       border-color: rgba(255,255,255,.14);
     }
 
+    .panel-logo{
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      opacity: .92;
+      filter:
+        drop-shadow(0 10px 22px rgba(0,0,0,.8))
+        contrast(1.05)
+        brightness(1.08);
+    }
+
     .panel-title{
       font-size: 28px;
       letter-spacing: .8px;
@@ -241,10 +254,8 @@
       inset:0;
       z-index:0;
       pointer-events:none;
-      opacity:1;
     }
 
-    /* Template: wird per data-tint gesetzt */
     .org-bg[data-tint="police"]{
       background:
         radial-gradient(900px 600px at 25% 15%, rgba(var(--police-tint), .16), rgba(0,0,0,0) 60%),
@@ -277,7 +288,7 @@
       .tile-grid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
       .panel-spacer{ width: 0; }
       .panel-title{ text-align:left; }
-      .panel-head{ justify-content:flex-start; }
+      .panel-head{ justify-content:flex-start; flex-wrap:wrap; }
     }
 
     .tile{
@@ -299,7 +310,6 @@
       filter: brightness(1.05);
     }
 
-    /* dezenter org-glow am tile (nur beim hover) */
     .tile::before{
       content:"";
       position:absolute;
@@ -397,12 +407,14 @@
     <div class="panel" data-org="police">
       <div class="panel-head">
         <div class="back-btn" data-back>
-          <!-- back icon -->
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Zurück
         </div>
+
+        <img class="panel-logo" src="logos/ncpd.png" alt="NCPD Logo">
+
         <h2 class="panel-title">NCPD</h2>
         <div class="panel-spacer"></div>
       </div>
@@ -461,12 +473,14 @@
           </svg>
           Zurück
         </div>
+
+        <img class="panel-logo" src="logos/academy.png" alt="Academy Logo">
+
         <h2 class="panel-title">Executive Education Academy</h2>
         <div class="panel-spacer"></div>
       </div>
 
       <div class="tile-grid">
-        <!-- gleiche 4 Tiles -->
         <div class="tile" data-link="map.html">
           <svg class="icon" viewBox="0 0 24 24" fill="none">
             <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -520,12 +534,14 @@
           </svg>
           Zurück
         </div>
+
+        <img class="panel-logo" src="logos/ncsd.png?v=2" alt="NCSD Logo">
+
         <h2 class="panel-title">NCSD</h2>
         <div class="panel-spacer"></div>
       </div>
 
       <div class="tile-grid">
-        <!-- gleiche 4 Tiles -->
         <div class="tile" data-link="map.html">
           <svg class="icon" viewBox="0 0 24 24" fill="none">
             <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -597,11 +613,11 @@
       btn.addEventListener('click', () => showView('home'));
     });
 
-    // Tiles: (später echte Links eintragen)
+    // Tiles
     document.querySelectorAll('.tile').forEach(tile => {
       tile.addEventListener('click', () => {
         const link = tile.getAttribute('data-link');
-        if (!link || link === '#') return; // noch keine Seite
+        if (!link || link === '#') return;
         window.location.href = link;
       });
     });
