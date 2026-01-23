@@ -93,6 +93,7 @@
 
       user-select:none;
       -webkit-tap-highlight-color:transparent;
+      overflow: visible; /* Glow darf außen sichtbar sein */
     }
 
     .card img{
@@ -103,26 +104,37 @@
       transform: translateZ(26px);
     }
 
-    /* ===== Glow Layer (aus im Idle) ===== */
+    /* ===== RUNDER GLOW (aus im Idle) =====
+       Statt inset-Rechteck: ein Kreis, der via scale „atmet“.
+       Dadurch verschwindet dieses quadratische “Backplate”-Gefühl.
+    */
     .card::before{
       content:"";
       position:absolute;
-      /* Startzustand egal, weil opacity 0 */
-      inset:-22px;
-      border-radius:46px;
+      left:50%;
+      top:50%;
+      width: 165%;
+      height: 165%;
+      transform: translate(-50%, -50%) scale(0.92);
+      border-radius: 9999px;
+
       pointer-events:none;
-      opacity:0;
-      filter: blur(56px);
+      opacity:0;                /* kein Glow im Idle */
+      filter: blur(36px);
+
+      /* extra runde Kante (verhindert “Box”-Look) */
+      -webkit-mask-image: radial-gradient(circle, #000 60%, transparent 78%);
+              mask-image: radial-gradient(circle, #000 60%, transparent 78%);
     }
 
     .card.police::before{
-      background: radial-gradient(circle at 30% 25%, var(--glow-police), transparent 72%);
+      background: radial-gradient(circle, var(--glow-police) 0%, transparent 62%);
     }
     .card.academy::before{
-      background: radial-gradient(circle at 30% 25%, var(--glow-academy), transparent 72%);
+      background: radial-gradient(circle, var(--glow-academy) 0%, transparent 62%);
     }
     .card.sd::before{
-      background: radial-gradient(circle at 30% 25%, var(--glow-sd), transparent 72%);
+      background: radial-gradient(circle, var(--glow-sd) 0%, transparent 62%);
     }
 
     /* ===== Hover Lift ===== */
@@ -138,39 +150,34 @@
         inset 0 0 0 1px rgba(255,255,255,.08);
     }
 
-    /* ===== Breathing Glow: zieht sich fast bis zur Kachel zurück und wieder raus =====
-       Wir animieren INSET + BLUR + OPACITY.
-       - "nah" = kleiner inset (z.B. -6px) -> Glow sitzt dicht an der Kachel
-       - "weit" = größerer inset (z.B. -30px) -> Glow breitet sich weit aus
-    */
-    @keyframes breatheGlow {
-      0% {
-        inset: -6px;
-        filter: blur(26px);
-        opacity: .85;
+    /* ===== „Runder“ Hover-Puls (langsamer) ===== */
+    @keyframes roundPulse {
+      0%{
+        opacity: .70;
+        transform: translate(-50%, -50%) scale(0.86);
+        filter: blur(28px);
       }
-      50% {
-        inset: -32px;
-        filter: blur(70px);
+      50%{
         opacity: 1;
+        transform: translate(-50%, -50%) scale(1.08);
+        filter: blur(46px);
       }
-      100% {
-        inset: -6px;
-        filter: blur(26px);
-        opacity: .85;
+      100%{
+        opacity: .70;
+        transform: translate(-50%, -50%) scale(0.86);
+        filter: blur(28px);
       }
     }
 
     .card:hover::before{
-      /* Glow an + “Breathing” */
       opacity: 1;
-      animation: breatheGlow 0.95s ease-in-out infinite;
+      animation: roundPulse 1.65s ease-in-out infinite; /* ✅ langsamer */
     }
 
-    /* Outer glow in den Boxshadows für maximale Präsenz */
-    .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 220px var(--glow-police); }
-    .card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 220px var(--glow-academy); }
-    .card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 220px var(--glow-sd); }
+    /* Optional: outer glow verstärkt, ohne Rechteck */
+    .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(20,55,150,.45); }
+    .card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(120,60,180,.45); }
+    .card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(25,110,70,.45); }
 
     /* Click feedback */
     .card:active{
