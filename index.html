@@ -18,18 +18,22 @@
       --tileBorder: rgba(255,255,255,.06);
 
       /* FINAL Farben */
-      --glow-police: rgba(55, 110, 220, 1);   /* Button 1: Blau */
-      --glow-academy: rgba(70, 170, 120, 1);  /* Button 2: Grün */
-      --glow-sd: rgba(210, 170, 45, 0.95);      /* Button 3: Gelb */
+      --glow-police: rgba(55, 110, 220, 1);     /* Button 1: Blau (stärker) */
+      --glow-academy: rgba(70, 170, 120, 1);    /* Button 2: Grün (stärker) */
+      --glow-sd: rgba(210, 170, 45, 0.95);      /* Button 3: Gelb (Referenz) */
 
-      /* Soft-Varianten für Box-Shadow / Transition (keine Hardcodes mehr) */
       --glow-police-soft: rgba(55, 110, 220, 0.55);
       --glow-academy-soft: rgba(70, 170, 120, 0.55);
       --glow-sd-soft: rgba(210, 170, 45, 0.35);
 
-      --glow-police-trans: rgba(20, 55, 150, 0.42);
-      --glow-academy-trans: rgba(25, 110, 70, 0.42);
+      --glow-police-trans: rgba(55, 110, 220, 0.42);
+      --glow-academy-trans: rgba(70, 170, 120, 0.42);
       --glow-sd-trans: rgba(210, 170, 45, 0.42);
+
+      /* Ebene-2 Tints (als RGB für Background-Mix) */
+      --police-tint: 55, 110, 220;
+      --academy-tint: 70, 170, 120;
+      --sd-tint: 210, 170, 45;
     }
 
     *{ box-sizing:border-box; }
@@ -40,29 +44,41 @@
       color:#fff;
     }
 
+    /* ===== App Views ===== */
     body{
-      display:flex;
-      align-items:center;
-      justify-content:center;
       overflow:hidden;
-      perspective:1200px;
-
       background:
         radial-gradient(900px 600px at 25% 15%, rgba(255,255,255,.06), rgba(255,255,255,0) 60%),
         radial-gradient(900px 600px at 80% 25%, rgba(255,255,255,.04), rgba(255,255,255,0) 65%),
         linear-gradient(135deg, var(--bg2), var(--bg0) 55%, var(--bg1));
     }
 
+    .view{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 32px 18px;
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(10px);
+      transition: opacity 260ms ease, transform 260ms ease;
+    }
+
+    .view.is-active{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+
     .container{
       text-align:center;
       max-width:1100px;
       width:100%;
-      padding:40px 20px;
       position:relative;
       z-index:3;
-      animation: fadeIn .5s ease both;
     }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
     h1{
       font-size:34px;
@@ -70,6 +86,13 @@
       margin:0 0 60px;
     }
 
+    footer{
+      margin-top:55px;
+      font-size:13px;
+      opacity:.6;
+    }
+
+    /* ===== Ebene 1: Org Buttons ===== */
     .buttons{
       display:flex;
       justify-content:center;
@@ -77,8 +100,7 @@
       flex-wrap:wrap;
     }
 
-    /* ===== CARD ===== */
-    .card{
+    .org-card{
       position:relative;
       width:260px;
       height:260px;
@@ -105,7 +127,7 @@
       overflow: visible;
     }
 
-    .card img{
+    .org-card img{
       max-width:80%;
       max-height:80%;
       object-fit:contain;
@@ -113,14 +135,13 @@
       transform: translateZ(26px);
     }
 
-    /* ===== RUNDER GLOW (NUR beim Hover) ===== */
-    .card::before{
+    /* Hover Glow: rund, kein Backplate */
+    .org-card::before{
       content:"";
       position:absolute;
       left:50%;
       top:50%;
 
-      /* Glow auf 150% */
       width: 150%;
       height: 150%;
 
@@ -133,71 +154,196 @@
       mix-blend-mode: screen;
     }
 
-    .card.police::before{
+    .org-card.police::before{
       background: radial-gradient(circle, var(--glow-police) 0%, rgba(0,0,0,0) 62%);
     }
-    .card.academy::before{
+    .org-card.academy::before{
       background: radial-gradient(circle, var(--glow-academy) 0%, rgba(0,0,0,0) 62%);
     }
-    .card.sd::before{
+    .org-card.sd::before{
       background: radial-gradient(circle, var(--glow-sd) 0%, rgba(0,0,0,0) 62%);
     }
 
-    /* ===== Hover Lift ===== */
-    .card:hover{
-      transform:
-        translateY(-18px)
-        rotateX(6deg)
-        scale(1.045);
-
+    .org-card:hover{
+      transform: translateY(-18px) rotateX(6deg) scale(1.045);
       filter: brightness(1.06);
       box-shadow:
         0 60px 110px rgba(0,0,0,.92),
         inset 0 0 0 1px rgba(255,255,255,.08);
     }
 
-    /* ===== Pulse (perfekt wie bei dir – jetzt ohne Farbreste) ===== */
     @keyframes roundPulse {
-      0%{
-        opacity: .70;
-        transform: translate(-50%, -50%) scale(0.78);
-        filter: blur(26px);
-      }
-      50%{
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.00);
-        filter: blur(46px);
-      }
-      100%{
-        opacity: .70;
-        transform: translate(-50%, -50%) scale(0.78);
-        filter: blur(26px);
-      }
+      0%{ opacity:.70; transform: translate(-50%, -50%) scale(0.78); filter: blur(26px); }
+      50%{ opacity:1;   transform: translate(-50%, -50%) scale(1.00); filter: blur(46px); }
+      100%{opacity:.70; transform: translate(-50%, -50%) scale(0.78); filter: blur(26px); }
     }
-
-    .card:hover::before{
-      opacity: 1;
+    .org-card:hover::before{
+      opacity:1;
       animation: roundPulse 1.65s ease-in-out infinite;
     }
 
-    /* 🔑 KEINE Hardcodes mehr: Outer Glow folgt immer der richtigen Farbe */
-    .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-police-soft); }
-    .card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-academy-soft); }
-    .card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-sd-soft); }
+    .org-card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-police-soft); }
+    .org-card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-academy-soft); }
+    .org-card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-sd-soft); }
 
-    /* Click feedback */
-    .card:active{
+    .org-card:active{
       transform: translateY(-10px) scale(1.02);
       filter: brightness(.98);
     }
 
-    footer{
-      margin-top:55px;
-      font-size:13px;
-      opacity:.6;
+    /* ===== Ebene 2: Org Panels ===== */
+    .panel{
+      width:min(1100px, 100%);
+      padding: 0 6px;
     }
 
-    /* ===== Click transition ===== */
+    .panel-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 28px;
+    }
+
+    .back-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,16,.55);
+      color:#fff;
+      font-weight:600;
+      letter-spacing:.2px;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .back-btn:hover{
+      transform: translateY(-1px);
+      background: rgba(10,12,16,.72);
+      border-color: rgba(255,255,255,.14);
+    }
+
+    .panel-title{
+      font-size: 28px;
+      letter-spacing: .8px;
+      margin: 0;
+      flex: 1;
+      text-align:center;
+    }
+    .panel-spacer{ width: 120px; } /* symmetrie rechts */
+
+    /* Metallischer, eingefärbter Hintergrund pro Org */
+    .org-bg{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:1;
+    }
+
+    /* Template: wird per data-tint gesetzt */
+    .org-bg[data-tint="police"]{
+      background:
+        radial-gradient(900px 600px at 25% 15%, rgba(var(--police-tint), .16), rgba(0,0,0,0) 60%),
+        radial-gradient(900px 600px at 80% 25%, rgba(var(--police-tint), .10), rgba(0,0,0,0) 65%),
+        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
+        linear-gradient(135deg, rgba(var(--police-tint), .10), var(--bg0) 55%, var(--bg1));
+    }
+    .org-bg[data-tint="academy"]{
+      background:
+        radial-gradient(900px 600px at 25% 15%, rgba(var(--academy-tint), .16), rgba(0,0,0,0) 60%),
+        radial-gradient(900px 600px at 80% 25%, rgba(var(--academy-tint), .10), rgba(0,0,0,0) 65%),
+        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
+        linear-gradient(135deg, rgba(var(--academy-tint), .10), var(--bg0) 55%, var(--bg1));
+    }
+    .org-bg[data-tint="sd"]{
+      background:
+        radial-gradient(900px 600px at 25% 15%, rgba(var(--sd-tint), .16), rgba(0,0,0,0) 60%),
+        radial-gradient(900px 600px at 80% 25%, rgba(var(--sd-tint), .10), rgba(0,0,0,0) 65%),
+        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
+        linear-gradient(135deg, rgba(var(--sd-tint), .10), var(--bg0) 55%, var(--bg1));
+    }
+
+    .tile-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 900px){
+      .tile-grid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+      .panel-spacer{ width: 0; }
+      .panel-title{ text-align:left; }
+      .panel-head{ justify-content:flex-start; }
+    }
+
+    .tile{
+      position:relative;
+      border-radius: 22px;
+      padding: 22px 16px 18px;
+      cursor:pointer;
+      background: linear-gradient(180deg, rgba(18,24,34,.86), rgba(10,12,16,.86));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 18px 40px rgba(0,0,0,.55);
+      transition: transform .35s cubic-bezier(.18,.9,.2,1), border-color .25s ease, filter .25s ease;
+      user-select:none;
+      overflow:hidden;
+    }
+
+    .tile:hover{
+      transform: translateY(-10px);
+      border-color: rgba(255,255,255,.14);
+      filter: brightness(1.05);
+    }
+
+    /* dezenter org-glow am tile (nur beim hover) */
+    .tile::before{
+      content:"";
+      position:absolute;
+      inset:-18px;
+      border-radius: 28px;
+      opacity:0;
+      filter: blur(26px);
+      mix-blend-mode: screen;
+      transition: opacity .25s ease;
+      pointer-events:none;
+    }
+
+    .panel[data-org="police"] .tile::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-police) 0%, rgba(0,0,0,0) 58%);
+    }
+    .panel[data-org="academy"] .tile::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-academy) 0%, rgba(0,0,0,0) 58%);
+    }
+    .panel[data-org="sd"] .tile::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-sd) 0%, rgba(0,0,0,0) 58%);
+    }
+    .tile:hover::before{ opacity:.9; }
+
+    .icon{
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 12px;
+      opacity: .92;
+    }
+
+    .label{
+      font-weight: 750;
+      letter-spacing: .4px;
+      font-size: 14px;
+      opacity: .95;
+    }
+
+    .sub{
+      font-size: 12px;
+      opacity: .65;
+      margin-top: 6px;
+    }
+
+    /* ===== Click transition overlay ===== */
     .transition{
       position:fixed;
       inset:0;
@@ -208,20 +354,12 @@
     }
     body.is-transitioning .transition{ opacity:1; }
 
-    /* 🔑 Transition folgt ebenfalls Variablen */
     .transition.police{ background: radial-gradient(circle, var(--glow-police-trans), rgba(5,6,7,.99)); }
     .transition.academy{ background: radial-gradient(circle, var(--glow-academy-trans), rgba(5,6,7,.99)); }
     .transition.sd{ background: radial-gradient(circle, var(--glow-sd-trans), rgba(5,6,7,.99)); }
 
-    body.is-transitioning .container{
-      filter: blur(2px);
-      opacity:.6;
-      transition: opacity .28s ease, filter .28s ease;
-    }
-
     @media (prefers-reduced-motion: reduce){
       *{ animation:none !important; transition:none !important; }
-      .card:hover::before{ opacity:1; }
     }
   </style>
 </head>
@@ -230,38 +368,241 @@
 
   <div class="transition" id="transition"></div>
 
-  <div class="container">
-    <h1>Narco City Exekutive Panel</h1>
+  <!-- ===== Ebene 1 ===== -->
+  <section class="view is-active" id="view-home" aria-label="Ebene 1">
+    <div class="container">
+      <h1>Narco City Exekutive Panel</h1>
 
-    <div class="buttons">
-      <div class="card police" data-theme="police" data-target="map.html">
-        <img src="logos/ncpd.png" alt="NCPD">
+      <div class="buttons">
+        <div class="org-card police" data-org="police" role="button" tabindex="0" aria-label="NCPD öffnen">
+          <img src="logos/ncpd.png" alt="NCPD">
+        </div>
+
+        <div class="org-card academy" data-org="academy" role="button" tabindex="0" aria-label="Academy öffnen">
+          <img src="logos/academy.png" alt="Academy">
+        </div>
+
+        <div class="org-card sd" data-org="sd" role="button" tabindex="0" aria-label="NCSD öffnen">
+          <img src="logos/ncsd.png?v=2" alt="NCSD">
+        </div>
       </div>
 
-      <div class="card academy" data-theme="academy" data-target="map.html">
-        <img src="logos/academy.png" alt="Academy">
+      <footer>© Narco City RP</footer>
+    </div>
+  </section>
+
+  <!-- ===== Ebene 2: Police ===== -->
+  <section class="view" id="view-police" aria-label="Ebene 2 Police">
+    <div class="org-bg" data-tint="police"></div>
+    <div class="panel" data-org="police">
+      <div class="panel-head">
+        <div class="back-btn" data-back>
+          <!-- back icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Zurück
+        </div>
+        <h2 class="panel-title">NCPD</h2>
+        <div class="panel-spacer"></div>
       </div>
 
-      <div class="card sd" data-theme="sd" data-target="map.html">
-        <img src="logos/ncsd.png?v=2" alt="NCSD">
+      <div class="tile-grid">
+        <div class="tile" data-link="map.html">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Karte</div>
+          <div class="sub">Interaktive Übersicht</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Umkleide</div>
+          <div class="sub">Outfits / Ausrüstung</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Dokumente</div>
+          <div class="sub">Vorlagen / Akten</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <div class="label">Fahrzeuge</div>
+          <div class="sub">Flotte / Codes</div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <footer>© Narco City RP</footer>
-  </div>
+  <!-- ===== Ebene 2: Academy ===== -->
+  <section class="view" id="view-academy" aria-label="Ebene 2 Academy">
+    <div class="org-bg" data-tint="academy"></div>
+    <div class="panel" data-org="academy">
+      <div class="panel-head">
+        <div class="back-btn" data-back>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Zurück
+        </div>
+        <h2 class="panel-title">Executive Education Academy</h2>
+        <div class="panel-spacer"></div>
+      </div>
+
+      <div class="tile-grid">
+        <!-- gleiche 4 Tiles -->
+        <div class="tile" data-link="map.html">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Karte</div>
+          <div class="sub">Interaktive Übersicht</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Umkleide</div>
+          <div class="sub">Outfits / Ausrüstung</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Dokumente</div>
+          <div class="sub">Vorlagen / Akten</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <div class="label">Fahrzeuge</div>
+          <div class="sub">Flotte / Codes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Ebene 2: SD ===== -->
+  <section class="view" id="view-sd" aria-label="Ebene 2 SD">
+    <div class="org-bg" data-tint="sd"></div>
+    <div class="panel" data-org="sd">
+      <div class="panel-head">
+        <div class="back-btn" data-back>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Zurück
+        </div>
+        <h2 class="panel-title">NCSD</h2>
+        <div class="panel-spacer"></div>
+      </div>
+
+      <div class="tile-grid">
+        <!-- gleiche 4 Tiles -->
+        <div class="tile" data-link="map.html">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Karte</div>
+          <div class="sub">Interaktive Übersicht</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Umkleide</div>
+          <div class="sub">Outfits / Ausrüstung</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="label">Dokumente</div>
+          <div class="sub">Vorlagen / Akten</div>
+        </div>
+
+        <div class="tile" data-link="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <div class="label">Fahrzeuge</div>
+          <div class="sub">Flotte / Codes</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script>
-    const transitionEl = document.getElementById('transition');
+    const views = {
+      home: document.getElementById('view-home'),
+      police: document.getElementById('view-police'),
+      academy: document.getElementById('view-academy'),
+      sd: document.getElementById('view-sd'),
+    };
 
-    function goTo(target, theme){
-      transitionEl.className = 'transition ' + theme;
-      document.body.classList.add('is-transitioning');
-      setTimeout(() => window.location.href = target, 320);
+    function showView(name){
+      Object.values(views).forEach(v => v.classList.remove('is-active'));
+      views[name].classList.add('is-active');
     }
 
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => {
-        goTo(card.dataset.target, card.dataset.theme);
+    // Ebene 1 -> Ebene 2
+    document.querySelectorAll('.org-card').forEach(card => {
+      const org = card.getAttribute('data-org');
+      const open = () => showView(org);
+
+      card.addEventListener('click', open);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
+
+    // Zurück Buttons
+    document.querySelectorAll('[data-back]').forEach(btn => {
+      btn.addEventListener('click', () => showView('home'));
+    });
+
+    // Tiles: (später echte Links eintragen)
+    document.querySelectorAll('.tile').forEach(tile => {
+      tile.addEventListener('click', () => {
+        const link = tile.getAttribute('data-link');
+        if (!link || link === '#') return; // noch keine Seite
+        window.location.href = link;
       });
     });
   </script>
