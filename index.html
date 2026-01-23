@@ -93,7 +93,7 @@
 
       user-select:none;
       -webkit-tap-highlight-color:transparent;
-      overflow: visible; /* Glow darf außen sichtbar sein */
+      overflow: visible;
     }
 
     .card img{
@@ -104,37 +104,46 @@
       transform: translateZ(26px);
     }
 
-    /* ===== RUNDER GLOW (aus im Idle) =====
-       Statt inset-Rechteck: ein Kreis, der via scale „atmet“.
-       Dadurch verschwindet dieses quadratische “Backplate”-Gefühl.
+    /* ===== RUNDER GLOW (NUR beim Hover, ohne dunkle Backplate) =====
+       - klein genug, dass er max. so groß ist wie der Puls
+       - mix-blend-mode: screen => hellt nur auf, kein dunkler Kreis
     */
     .card::before{
       content:"";
       position:absolute;
       left:50%;
       top:50%;
-      width: 165%;
-      height: 165%;
-      transform: translate(-50%, -50%) scale(0.92);
+
+      /* MAXIMALE Ausdehnung (diese Größe entspricht dem Puls-Maximum) */
+      width: 135%;
+      height: 135%;
+
+      transform: translate(-50%, -50%) scale(0.78);
       border-radius: 9999px;
 
       pointer-events:none;
-      opacity:0;                /* kein Glow im Idle */
-      filter: blur(36px);
-
-      /* extra runde Kante (verhindert “Box”-Look) */
-      -webkit-mask-image: radial-gradient(circle, #000 60%, transparent 78%);
-              mask-image: radial-gradient(circle, #000 60%, transparent 78%);
+      opacity:0;                 /* aus im Idle */
+      filter: blur(34px);
+      mix-blend-mode: screen;    /* 🔑 verhindert dunkle Scheibe */
     }
 
     .card.police::before{
-      background: radial-gradient(circle, var(--glow-police) 0%, transparent 62%);
+      background: radial-gradient(circle,
+        var(--glow-police) 0%,
+        rgba(0,0,0,0) 62%
+      );
     }
     .card.academy::before{
-      background: radial-gradient(circle, var(--glow-academy) 0%, transparent 62%);
+      background: radial-gradient(circle,
+        var(--glow-academy) 0%,
+        rgba(0,0,0,0) 62%
+      );
     }
     .card.sd::before{
-      background: radial-gradient(circle, var(--glow-sd) 0%, transparent 62%);
+      background: radial-gradient(circle,
+        var(--glow-sd) 0%,
+        rgba(0,0,0,0) 62%
+      );
     }
 
     /* ===== Hover Lift ===== */
@@ -150,34 +159,37 @@
         inset 0 0 0 1px rgba(255,255,255,.08);
     }
 
-    /* ===== „Runder“ Hover-Puls (langsamer) ===== */
+    /* ===== „Breathing“ Glow (langsamer & runder) =====
+       Puls bewegt sich NUR innerhalb der 135% Fläche (scale 0.78 -> 1.00)
+       => nie größer als das Puls-Maximum
+    */
     @keyframes roundPulse {
       0%{
         opacity: .70;
-        transform: translate(-50%, -50%) scale(0.86);
-        filter: blur(28px);
+        transform: translate(-50%, -50%) scale(0.78);
+        filter: blur(26px);
       }
       50%{
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.08);
+        transform: translate(-50%, -50%) scale(1.00);
         filter: blur(46px);
       }
       100%{
         opacity: .70;
-        transform: translate(-50%, -50%) scale(0.86);
-        filter: blur(28px);
+        transform: translate(-50%, -50%) scale(0.78);
+        filter: blur(26px);
       }
     }
 
     .card:hover::before{
       opacity: 1;
-      animation: roundPulse 1.65s ease-in-out infinite; /* ✅ langsamer */
+      animation: roundPulse 1.65s ease-in-out infinite;
     }
 
-    /* Optional: outer glow verstärkt, ohne Rechteck */
-    .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(20,55,150,.45); }
-    .card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(120,60,180,.45); }
-    .card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 190px rgba(25,110,70,.45); }
+    /* optional: outer glow */
+    .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px rgba(20,55,150,.35); }
+    .card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px rgba(120,60,180,.35); }
+    .card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px rgba(25,110,70,.35); }
 
     /* Click feedback */
     .card:active{
