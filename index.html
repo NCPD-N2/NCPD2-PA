@@ -18,9 +18,9 @@
       --tileBorder: rgba(255,255,255,.06);
 
       /* Glow-Farben */
-      --glow-police: rgba(20, 55, 150, 0.95);   /* tiefes Blau */
-      --glow-academy: rgba(170, 130, 40, 0.95); /* dunkles Gold */
-      --glow-sd: rgba(25, 110, 70, 0.95);       /* tiefes Grün */
+      --glow-police: rgba(20, 55, 150, 0.95);
+      --glow-academy: rgba(170, 130, 40, 0.95);
+      --glow-sd: rgba(25, 110, 70, 0.95);
     }
 
     *{ box-sizing:border-box; }
@@ -36,41 +36,14 @@
       align-items:center;
       justify-content:center;
       overflow:hidden;
-      perspective: 1200px;
+      perspective:1200px;
 
-      /* Metallic dark grey / black */
       background:
-        radial-gradient(900px 600px at 25% 15%, rgba(255,255,255,.08), rgba(255,255,255,0) 60%),
-        radial-gradient(900px 600px at 80% 25%, rgba(255,255,255,.05), rgba(255,255,255,0) 65%),
-        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.04), rgba(255,255,255,0) 60%),
+        radial-gradient(900px 600px at 25% 15%, rgba(255,255,255,.06), rgba(255,255,255,0) 60%),
+        radial-gradient(900px 600px at 80% 25%, rgba(255,255,255,.04), rgba(255,255,255,0) 65%),
         linear-gradient(135deg, var(--bg2), var(--bg0) 55%, var(--bg1));
     }
 
-    /* Metallic sweep (dezent) */
-    @keyframes sweep {
-      from { transform: translateX(-140%) rotate(12deg); opacity: 0; }
-      18%  { opacity: 1; }
-      to   { transform: translateX(140%) rotate(12deg); opacity: 0; }
-    }
-    body::after{
-      content:"";
-      position:fixed;
-      inset:-40%;
-      pointer-events:none;
-      background: linear-gradient(
-        90deg,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,.08) 45%,
-        rgba(255,255,255,.18) 50%,
-        rgba(255,255,255,.08) 55%,
-        rgba(255,255,255,0) 100%
-      );
-      mix-blend-mode: screen;
-      animation: sweep 1050ms ease-out 1 both;
-      z-index: 2;
-    }
-
-    /* Container */
     .container{
       text-align:center;
       max-width:1100px;
@@ -78,14 +51,10 @@
       padding:40px 20px;
       position:relative;
       z-index:3;
+      animation: fadeIn .5s ease both;
     }
 
-    /* Kleiner Entry-Fade (ohne transform-Kollision auf den Cards) */
-    @keyframes fadeIn {
-      from { opacity:0; }
-      to   { opacity:1; }
-    }
-    .container{ animation: fadeIn 520ms ease both; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
     h1{
       font-size:34px;
@@ -100,7 +69,7 @@
       flex-wrap:wrap;
     }
 
-    /* ===== Cards (kein transform-Animation im Idle!) ===== */
+    /* ===== CARD ===== */
     .card{
       position:relative;
       width:260px;
@@ -117,16 +86,14 @@
       align-items:center;
       justify-content:center;
 
-      transform-style: preserve-3d;
-
-      /* Sanftes Senken/Zurückfedern */
+      transform-style:preserve-3d;
       transition:
-        transform .62s cubic-bezier(.18, .9, .2, 1),
-        box-shadow .62s cubic-bezier(.18, .9, .2, 1),
-        filter .45s ease;
+        transform .6s cubic-bezier(.18,.9,.2,1),
+        box-shadow .6s cubic-bezier(.18,.9,.2,1),
+        filter .4s ease;
 
       user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color:transparent;
     }
 
     .card img{
@@ -137,25 +104,16 @@
       transform: translateZ(26px);
     }
 
-    /* ===== Glow pulsiert IM IDLE (nur ::before) ===== */
-    @keyframes glowPulse {
-      0%, 100% { opacity: .16; transform: scale(0.985); filter: blur(44px); }
-      50%      { opacity: .30; transform: scale(1.025); filter: blur(48px); }
-    }
-
+    /* ===== GLOW LAYER (AUS IM IDLE) ===== */
     .card::before{
       content:"";
       position:absolute;
-      inset:-18px;
-      border-radius:42px;
+      inset:-20px;
+      border-radius:44px;
       pointer-events:none;
-
-      opacity: .18;
-      filter: blur(44px);
-      transform-origin: 50% 50%;
-
-      animation: glowPulse 3.2s ease-in-out infinite;
-      transition: opacity .25s ease, filter .25s ease;
+      opacity:0;                 /* 🔑 kein Glow im Idle */
+      filter: blur(52px);
+      transition: opacity .35s ease;
     }
 
     .card.police::before{
@@ -168,7 +126,7 @@
       background: radial-gradient(circle at 30% 25%, var(--glow-sd), transparent 72%);
     }
 
-    /* ===== Hover = Lift (funktioniert jetzt zuverlässig) ===== */
+    /* ===== HOVER: ANHEBEN + GLOW ===== */
     .card:hover{
       transform:
         translateY(-18px)
@@ -176,17 +134,13 @@
         scale(1.045);
 
       filter: brightness(1.06);
-
       box-shadow:
         0 60px 110px rgba(0,0,0,.92),
         inset 0 0 0 1px rgba(255,255,255,.08);
     }
 
-    /* beim Hover: pulsieren pausieren + Glow konstant stark */
     .card:hover::before{
-      animation: none;
-      opacity: 1;
-      filter: blur(52px);
+      opacity:1;                 /* 🔥 Glow NUR beim Hover */
     }
 
     .card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 165px var(--glow-police); }
@@ -196,7 +150,7 @@
     /* Click feedback */
     .card:active{
       transform: translateY(-10px) scale(1.02);
-      filter: brightness(0.98);
+      filter: brightness(.98);
     }
 
     footer{
@@ -205,13 +159,13 @@
       opacity:.6;
     }
 
-    /* ===== Click transition overlay ===== */
+    /* ===== Click transition ===== */
     .transition{
       position:fixed;
       inset:0;
       pointer-events:none;
       opacity:0;
-      transition: opacity 280ms ease;
+      transition: opacity .28s ease;
       z-index:9999;
     }
     body.is-transitioning .transition{ opacity:1; }
@@ -223,13 +177,11 @@
     body.is-transitioning .container{
       filter: blur(2px);
       opacity:.6;
-      transition: opacity 280ms ease, filter 280ms ease;
+      transition: opacity .28s ease, filter .28s ease;
     }
 
-    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       *{ animation:none !important; transition:none !important; }
-      .card::before{ opacity:.16; }
     }
   </style>
 </head>
@@ -251,7 +203,7 @@
       </div>
 
       <div class="card sd" data-theme="sd" data-target="map.html">
-        <img src="logos/ncsd.png" alt="NCSD">
+        <img src="logos/ncsd.png?v=2" alt="NCSD">
       </div>
     </div>
 
