@@ -12,13 +12,14 @@
       --bg2:#2d5aa8;
 
       /* matte tile-farben */
-      --tile0:#0b0f16;   /* fast schwarz */
-      --tile1:#131a24;   /* dunkelgrau */
+      --tile0:#0b0f16;
+      --tile1:#131a24;
       --tileBorder: rgba(255,255,255,.06);
 
       /* glow farben */
       --glow-police: rgba(80,145,255,.90);
       --glow-academy: rgba(220,180,90,.90);
+      --glow-sd: rgba(120,220,180,.90);
     }
 
     *{ box-sizing:border-box; }
@@ -66,7 +67,7 @@
 
     .container{
       text-align:center;
-      max-width:960px;
+      max-width:1100px;
       width:100%;
       padding:40px 20px;
       animation: fadeUp 700ms ease both;
@@ -77,7 +78,7 @@
     h1{
       font-size:34px;
       letter-spacing:1px;
-      margin:0 0 50px;
+      margin:0 0 60px;
     }
 
     .buttons{
@@ -90,12 +91,12 @@
     /* ===== Matte tiles ===== */
     .card{
       position:relative;
-      width:280px;
+      width:260px;
+      height:260px;
       padding:30px;
       border-radius:26px;
       cursor:pointer;
 
-      /* matt: kaum highlights, keine glänzenden gradients */
       background: linear-gradient(180deg, var(--tile1), var(--tile0));
       box-shadow:
         0 18px 40px rgba(0,0,0,.65),
@@ -105,25 +106,37 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
 
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
       opacity:0;
       animation: fadeUp 700ms ease both;
     }
 
     .card:nth-child(1){ animation-delay: 220ms; }
     .card:nth-child(2){ animation-delay: 360ms; }
+    .card:nth-child(3){ animation-delay: 500ms; }
 
     .card img{
-      max-width:100%;
-      height:auto;
-      margin-bottom:18px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.75));
+      max-width:80%;
+      max-height:80%;
+      object-fit:contain;
+      filter: drop-shadow(0 12px 22px rgba(0,0,0,.75));
     }
 
-    .card span{
-      display:block;
-      font-size:15px;
-      letter-spacing:.6px;
-      opacity:.92;
+    /* Platzhalter für SD */
+    .placeholder{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      border:2px dashed rgba(255,255,255,.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      opacity:.55;
+      letter-spacing:.5px;
     }
 
     footer{
@@ -132,7 +145,7 @@
       opacity:.6;
     }
 
-    /* ===== Stronger glow (hover) ===== */
+    /* ===== Glow ===== */
     .card::before{
       content:"";
       position:absolute;
@@ -144,51 +157,27 @@
       transition: opacity .20s ease;
     }
 
-    .card::after{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:24px;
-      pointer-events:none;
-      opacity:0;
-      transition: opacity .20s ease;
-      box-shadow: inset 0 0 22px rgba(255,255,255,.10);
-    }
-
     .card.police::before{
-      background: radial-gradient(circle at 30% 20%, var(--glow-police), rgba(0,0,0,0) 68%);
+      background: radial-gradient(circle at 30% 20%, var(--glow-police), transparent 68%);
     }
     .card.academy::before{
-      background: radial-gradient(circle at 30% 20%, var(--glow-academy), rgba(0,0,0,0) 68%);
+      background: radial-gradient(circle at 30% 20%, var(--glow-academy), transparent 68%);
+    }
+    .card.sd::before{
+      background: radial-gradient(circle at 30% 20%, var(--glow-sd), transparent 68%);
     }
 
     .card:hover{
       transform: translateY(-8px) scale(1.03);
       filter: brightness(1.05);
     }
-    .card:hover::before,
-    .card:hover::after{ opacity:1; }
+    .card:hover::before{ opacity:1; }
 
-    .card.police:hover{
-      box-shadow:
-        0 0 70px var(--glow-police),
-        0 30px 60px rgba(0,0,0,.78),
-        inset 0 0 0 1px rgba(255,255,255,.10);
-    }
-    .card.academy:hover{
-      box-shadow:
-        0 0 70px var(--glow-academy),
-        0 30px 60px rgba(0,0,0,.78),
-        inset 0 0 0 1px rgba(255,255,255,.10);
-    }
+    .card.police:hover{ box-shadow: 0 0 70px var(--glow-police), 0 30px 60px rgba(0,0,0,.78); }
+    .card.academy:hover{ box-shadow: 0 0 70px var(--glow-academy), 0 30px 60px rgba(0,0,0,.78); }
+    .card.sd:hover{ box-shadow: 0 0 70px var(--glow-sd), 0 30px 60px rgba(0,0,0,.78); }
 
-    /* ===== Click "press" feedback ===== */
-    .card:active{
-      transform: translateY(-2px) scale(0.995);
-      filter: brightness(0.98);
-    }
-
-    /* ===== Fullscreen Transition Overlay ===== */
+    /* ===== Click transition ===== */
     .transition{
       position:fixed;
       inset:0;
@@ -197,75 +186,42 @@
       transform: scale(1.02);
       transition: opacity 260ms ease, transform 260ms ease;
       z-index:9999;
-      display:grid;
-      place-items:center;
-    }
-
-    .transition .badge{
-      width:min(440px,80vw);
-      height:min(440px,80vw);
-      border-radius:999px;
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.14), rgba(255,255,255,0) 55%);
-      box-shadow:
-        0 30px 80px rgba(0,0,0,.80),
-        inset 0 0 0 1px rgba(255,255,255,.10);
-      opacity:.88;
-      transform: scale(.95);
-      transition: transform 260ms ease;
     }
 
     body.is-transitioning .transition{
       opacity:1;
       transform: scale(1);
     }
-    body.is-transitioning .transition .badge{
-      transform: scale(1);
-    }
 
-    .transition.police{
-      background:
-        radial-gradient(circle at 30% 20%, rgba(80,145,255,.32), rgba(10,26,58,.985) 58%),
-        linear-gradient(135deg, rgba(80,145,255,.14), rgba(7,19,38,.985));
-    }
-    .transition.academy{
-      background:
-        radial-gradient(circle at 30% 20%, rgba(220,180,90,.28), rgba(10,26,58,.985) 58%),
-        linear-gradient(135deg, rgba(220,180,90,.12), rgba(7,19,38,.985));
-    }
+    .transition.police{ background: radial-gradient(circle, rgba(80,145,255,.35), rgba(7,19,38,.98)); }
+    .transition.academy{ background: radial-gradient(circle, rgba(220,180,90,.30), rgba(7,19,38,.98)); }
+    .transition.sd{ background: radial-gradient(circle, rgba(120,220,180,.30), rgba(7,19,38,.98)); }
 
     body.is-transitioning .container{
       filter: blur(2px);
-      transform: scale(0.985);
-      opacity: 0.70;
-      transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
-    }
-
-    /* Accessibility */
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none !important; transition:none !important; }
-      body.is-transitioning .container{ filter:none; transform:none; opacity:1; }
+      opacity:.6;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="transition" id="transition">
-    <div class="badge" aria-hidden="true"></div>
-  </div>
+  <div class="transition" id="transition"></div>
 
   <div class="container">
     <h1>Narco City – Interaktive Karte</h1>
 
     <div class="buttons">
-      <div class="card police" data-theme="police" data-target="map.html" role="button" tabindex="0" aria-label="Police Department Karte öffnen">
+      <div class="card police" data-theme="police" data-target="map.html">
         <img src="logos/ncpd.png" alt="NCPD">
-        <span>Police Department Karte</span>
       </div>
 
-      <div class="card academy" data-theme="academy" data-target="map.html" role="button" tabindex="0" aria-label="Executive Education Academy Karte öffnen">
+      <div class="card academy" data-theme="academy" data-target="map.html">
         <img src="logos/academy.png" alt="Academy">
-        <span>Executive Education Academy</span>
+      </div>
+
+      <div class="card sd" data-theme="sd" data-target="map.html">
+        <div class="placeholder">SD</div>
       </div>
     </div>
 
@@ -275,35 +231,18 @@
   <script>
     const transitionEl = document.getElementById('transition');
 
-    function goTo(target, theme) {
-      // overlay theme
-      transitionEl.classList.remove('police', 'academy');
-      transitionEl.classList.add(theme);
-
-      // start transition
+    function goTo(target, theme){
+      transitionEl.className = 'transition ' + theme;
       document.body.classList.add('is-transitioning');
-
-      // redirect after a short visible animation
-      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const delay = reduced ? 0 : 320;
 
       setTimeout(() => {
         window.location.href = target;
-      }, delay);
+      }, 300);
     }
 
     document.querySelectorAll('.card').forEach(card => {
-      const target = card.getAttribute('data-target') || 'map.html';
-      const theme = card.getAttribute('data-theme') || 'police';
-
-      card.addEventListener('click', () => goTo(target, theme));
-
-      // keyboard access (Enter/Space)
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          goTo(target, theme);
-        }
+      card.addEventListener('click', () => {
+        goTo(card.dataset.target, card.dataset.theme);
       });
     });
   </script>
