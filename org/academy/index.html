@@ -25,7 +25,6 @@ body{
   align-items:flex-start;
   padding:14px 18px 28px;
   position:relative;
-
   background:
     radial-gradient(1400px 900px at 70% 40%, rgba(0,0,0,.55), rgba(0,0,0,0) 70%),
     linear-gradient(135deg,#0b1019,#050607 55%,#0b0e12);
@@ -36,26 +35,22 @@ body::before{
   position:fixed;
   inset:0;
   pointer-events:none;
-  -webkit-clip-path: polygon(0 0, 100% 0, 0 100%);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-
   background:
-    linear-gradient(135deg,
+    linear-gradient(148deg,
       rgba(var(--accentDark), .98) 0%,
-      rgba(var(--accentDark), .86) 45%,
-      rgba(var(--accentDark), .68) 100%
+      rgba(var(--accentDark), .92) 34%,
+      rgba(var(--accentDark), .74) 46%,
+      rgba(var(--accentDark), .42) 54%,
+      rgba(var(--accentDark), .18) 60%,
+      rgba(0,0,0,0) 68%
     ),
-    linear-gradient(115deg,
+    linear-gradient(120deg,
       rgba(255,255,255,.10) 0%,
       rgba(255,255,255,0) 28%,
-      rgba(255,255,255,.08) 52%,
+      rgba(255,255,255,.07) 52%,
       rgba(255,255,255,0) 78%
     ),
-    linear-gradient(160deg,
-      rgba(0,0,0,.20) 0%,
-      rgba(0,0,0,0) 55%
-    );
-
+    radial-gradient(1200px 900px at 15% 95%, rgba(0,0,0,.35), rgba(0,0,0,0) 65%);
   mix-blend-mode:multiply;
   opacity:1;
 }
@@ -65,10 +60,9 @@ body::after{
   position:fixed;
   inset:0;
   pointer-events:none;
-
   background:
-    radial-gradient(1200px 900px at 50% 110%, rgba(0,0,0,.78), rgba(0,0,0,0) 72%),
-    radial-gradient(900px 650px at 18% 18%, rgba(var(--accent),.22), rgba(0,0,0,0) 60%);
+    radial-gradient(1200px 900px at 50% 112%, rgba(0,0,0,.78), rgba(0,0,0,0) 72%),
+    radial-gradient(900px 650px at 18% 18%, rgba(var(--accent),.22), rgba(0,0,0,0) 62%);
   mix-blend-mode:screen;
   opacity:1;
 }
@@ -106,8 +100,8 @@ h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
   border-color:rgba(255,255,255,.14);
   box-shadow:
     0 24px 55px rgba(0,0,0,.65),
-    0 0 40px rgba(var(--accent), .40),
-    0 0 90px rgba(var(--accent), .22);
+    0 0 42px rgba(var(--accent), .44),
+    0 0 100px rgba(var(--accent), .26);
   filter:brightness(1.06);
 }
 .tile::before{
@@ -119,7 +113,7 @@ h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
   transition:opacity .22s ease;
   pointer-events:none;
   filter:blur(22px);
-  background:radial-gradient(circle at 30% 20%, rgba(var(--accent),.95) 0%, rgba(0,0,0,0) 62%);
+  background:radial-gradient(circle at 30% 20%, rgba(var(--accent),.98) 0%, rgba(0,0,0,0) 62%);
 }
 .tile:hover::before{opacity:.95}
 
