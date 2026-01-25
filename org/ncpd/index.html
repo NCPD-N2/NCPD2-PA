@@ -3,22 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Narco City Police Department</title>
+<title>TEST – NCPD</title>
 
 <style>
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 
+/* ========= FARBFESTLEGUNG ========= */
 :root{
-  /* Blau */
-  --accent: 70,130,255;        /* Glow-Farbe */
-  --accentDark: 18,64,170;     /* Hintergrund-Farbe */
+  --accent: 70,130,255;        /* Glow */
+  --accentDark: 20,60,160;     /* Hintergrund */
   --tileTop: 18,24,34;
   --tileBot: 8,10,14;
 }
 
+/* ========= TEST: MUSS SICHTBAR SEIN ========= */
 body{
-  body { outline: 10px solid lime !important; }
+  outline:10px solid lime !important; /* ← TEST: MUSS grün sein */
+}
+
+/* ========= BASIS ========= */
+body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   color:#fff;
   overflow:hidden;
@@ -27,114 +32,143 @@ body{
   align-items:flex-start;
   padding:14px 18px 28px;
   position:relative;
-
-  /* dunkle Basis */
-  background:
-    radial-gradient(1400px 900px at 70% 40%, rgba(0,0,0,.55), rgba(0,0,0,0) 70%),
-    linear-gradient(135deg,#0b1019,#050607 55%,#0b0e12);
+  background:#050607;
 }
 
-/* ✅ Halb so groß + halb so stark:
-   - Farbe “endet” früher (weniger Fläche)
-   - Alpha insgesamt reduziert (weniger Stärke) */
+/* ========= FARBDREIECK – SICHTBAR BIS ZUR MITTE ========= */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
 
+  /* WICHTIG: mix-blend-mode NORMAL, damit es 100% sichtbar ist */
+  mix-blend-mode: normal;
+  opacity:1;
+
   background:
     linear-gradient(148deg,
-      rgba(var(--accentDark), .72) 0%,
-      rgba(var(--accentDark), .68) 48%,
-      rgba(var(--accentDark), .55) 62%,
-      rgba(var(--accentDark), .32) 72%,
-      rgba(var(--accentDark), .14) 82%,
-      rgba(0,0,0,0) 92%
-    ),
-    /* dezenter metallic-schimmer */
-    linear-gradient(120deg,
-      rgba(255,255,255,.06) 0%,
-      rgba(255,255,255,0) 30%,
-      rgba(255,255,255,.04) 55%,
-      rgba(255,255,255,0) 80%
+      rgba(var(--accentDark), .88) 0%,
+      rgba(var(--accentDark), .82) 42%,
+      rgba(var(--accentDark), .60) 52%,
+      rgba(var(--accentDark), .30) 60%,
+      rgba(0,0,0,0) 70%
     );
-
-  mix-blend-mode:multiply;
-  opacity:1;
 }
 
-/* dezente Tiefe */
+/* ========= METALLIC LICHT (dezent) ========= */
 body::after{
   content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(1100px 800px at 50% 112%, rgba(0,0,0,.75), rgba(0,0,0,0) 72%),
-    radial-gradient(750px 520px at 18% 18%, rgba(var(--accent),.10), rgba(0,0,0,0) 62%);
-  mix-blend-mode:screen;
-  opacity:1;
+    radial-gradient(900px 700px at 20% 30%,
+      rgba(var(--accent),.25),
+      rgba(0,0,0,0) 65%
+    ),
+    radial-gradient(1200px 900px at 60% 120%,
+      rgba(0,0,0,.85),
+      rgba(0,0,0,0) 72%
+    );
 }
 
-.panel{position:relative;z-index:2;width:min(1100px,100%);text-align:center}
+/* ========= INHALT ========= */
+.panel{
+  position:relative;
+  z-index:2;
+  width:min(1100px,100%);
+  text-align:center;
+}
+
 .logo{
-  width:150px;height:150px;object-fit:contain;margin:0 auto 10px;
+  width:150px;
+  height:150px;
+  object-fit:contain;
+  margin-bottom:10px;
   filter:drop-shadow(0 18px 38px rgba(0,0,0,.9));
 }
-h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
+
+h1{
+  margin:0 0 10px;
+  font-size:26px;
+  letter-spacing:.6px;
+}
 
 .back{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 16px;border-radius:999px;
+  display:inline-block;
+  padding:10px 18px;
+  border-radius:999px;
+  background:rgba(0,0,0,.55);
   border:1px solid rgba(255,255,255,.15);
-  background:rgba(0,0,0,.45);
-  color:#fff;text-decoration:none;font-weight:600;
-  margin-bottom:20px;
-  transition:transform .2s ease, background .2s ease;
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  margin-bottom:26px;
 }
-.back:hover{transform:translateY(-1px);background:rgba(0,0,0,.55)}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+/* ========= GRID ========= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
 
+/* ========= KACHELN ========= */
 .tile{
   position:relative;
-  background:linear-gradient(180deg,rgba(var(--tileTop),.86),rgba(var(--tileBot),.86));
-  border-radius:22px;padding:22px;
-  text-decoration:none;color:#fff;
-  box-shadow:0 18px 36px rgba(0,0,0,.62);
+  background:linear-gradient(180deg,
+    rgba(var(--tileTop),.9),
+    rgba(var(--tileBot),.9)
+  );
+  border-radius:22px;
+  padding:22px;
+  text-decoration:none;
+  color:#fff;
   border:1px solid rgba(255,255,255,.06);
-  transition:transform .35s cubic-bezier(.18,.9,.2,1), border-color .25s ease, box-shadow .25s ease, filter .25s ease;
+  box-shadow:0 18px 36px rgba(0,0,0,.65);
+  transition:
+    transform .35s cubic-bezier(.18,.9,.2,1),
+    box-shadow .3s ease,
+    border-color .3s ease;
   overflow:hidden;
 }
 
-/* ✅ Buttons leuchten wieder (moderater) */
+/* ========= GLOW BEIM HOVER ========= */
 .tile:hover{
   transform:translateY(-8px);
-  border-color:rgba(var(--accent),.35);
+  border-color:rgba(var(--accent),.45);
   box-shadow:
-    0 22px 46px rgba(0,0,0,.68),
-    0 0 26px rgba(var(--accent), .28),
-    0 0 58px rgba(var(--accent), .14);
-  filter:brightness(1.04);
+    0 22px 46px rgba(0,0,0,.75),
+    0 0 28px rgba(var(--accent),.45),
+    0 0 64px rgba(var(--accent),.25);
 }
 
-/* farbiger halo */
+/* farbiger Halo */
 .tile::before{
   content:"";
   position:absolute;
-  inset:-20px;
+  inset:-18px;
   border-radius:28px;
   opacity:0;
-  transition:opacity .22s ease;
-  pointer-events:none;
+  transition:opacity .25s ease;
   filter:blur(22px);
-  background:radial-gradient(circle at 30% 25%, rgba(var(--accent),.70) 0%, rgba(0,0,0,0) 62%);
+  background:
+    radial-gradient(circle at 30% 25%,
+      rgba(var(--accent),.9),
+      rgba(0,0,0,0) 60%
+    );
 }
-.tile:hover::before{opacity:.85}
+.tile:hover::before{opacity:.9}
 
-.icon{width:46px;height:46px;margin:0 auto 10px;display:block;opacity:.95}
+.icon{
+  width:46px;
+  height:46px;
+  margin:0 auto 10px;
+  display:block;
+  opacity:.95;
+}
+
 .label{font-weight:700;font-size:14px}
 .sub{font-size:12px;opacity:.65;margin-top:4px}
 </style>
@@ -144,53 +178,31 @@ h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
 <div class="panel">
   <img src="../../logos/ncpd.png" class="logo" alt="NCPD Logo">
   <h1>Narco City Police Department</h1>
-  <a href="../../index.html" class="back">← Zurück</a>
+  <a class="back" href="../../index.html">← Zurück</a>
 
   <div class="grid">
-    <a class="tile" href="../../map/">
+    <a class="tile" href="#">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
         <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2"/>
-        <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/>
       </svg>
-      <div class="label">Einsatzkarte</div><div class="sub">Interaktive Übersicht</div>
+      <div class="label">Einsatzkarte</div>
+      <div class="sub">Interaktive Übersicht</div>
     </a>
 
     <a class="tile" href="#">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
         <path d="M8 4l4 2 4-2 4 3-2 4-2-1v10H8V10l-2 1-2-4 4-3z" stroke="currentColor" stroke-width="2"/>
       </svg>
-      <div class="label">Kleiderordnung</div><div class="sub">Outfits / Ausrüstung</div>
+      <div class="label">Kleiderordnung</div>
+      <div class="sub">Outfits / Ausrüstung</div>
     </a>
 
     <a class="tile" href="#">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
         <path d="M14 2H6v20h12V8z" stroke="currentColor" stroke-width="2"/>
       </svg>
-      <div class="label">Dokumente</div><div class="sub">Vorlagen / Akten</div>
-    </a>
-
-    <a class="tile" href="#">
-      <svg class="icon" viewBox="0 0 24 24" fill="none">
-        <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2"/>
-        <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="2"/>
-        <circle cx="17" cy="18" r="2" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <div class="label">Fahrzeugordnung</div><div class="sub">Flotte / Codes</div>
-    </a>
-
-    <a class="tile" href="#">
-      <svg class="icon" viewBox="0 0 24 24" fill="none">
-        <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
-        <path d="M7 7h10M7 12h10M7 17h10" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <div class="label">Unit Übersicht</div><div class="sub">Teams / Funk</div>
-    </a>
-
-    <a class="tile" href="#">
-      <svg class="icon" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <div class="label">Weisungen</div><div class="sub">Regeln / SOP</div>
+      <div class="label">Dokumente</div>
+      <div class="sub">Vorlagen / Akten</div>
     </a>
   </div>
 </div>
