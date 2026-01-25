@@ -4,11 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Narco City Police Department</title>
+
 <link rel="stylesheet" href="../../assets/ui.css">
+
 <style>
-:root{ --accent:70,130,255; --accentDark:20,60,160; }
+:root{
+  --accent: 70,130,255;
+  --accentDark: 20,60,160;
+}
 </style>
 </head>
+
 <body>
 <div class="panel">
   <img src="../../logos/ncpd.png" class="logo" alt="NCPD Logo">
@@ -16,51 +22,61 @@
   <a class="back" href="../../index.html">← Zurück</a>
 
   <div class="grid">
-    <!-- Reihenfolge: 1 Einsatzkarte, 2 Dokumente, 3 Weisungen, 4 Unit, 5 Kleiderordnung, 6 Grundausrüstung, 7 Fahrzeugordnung -->
+
     <a class="tile" href="../../map/">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
         <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2"/>
         <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/>
-      </svg><div class="label">Einsatzkarte</div>
+      </svg>
+      <div class="label">Einsatzkarte</div>
     </a>
 
-    <a class="tile" href="./tiles/dokumente/">
-      <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M14 2H6v20h12V8z" stroke="currentColor" stroke-width="2"/></svg>
+    <a class="tile" href="tiles/dokumente/">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <path d="M14 2H6v20h12V8z" stroke="currentColor" stroke-width="2"/>
+      </svg>
       <div class="label">Dokumente</div>
     </a>
 
-    <a class="tile" href="./tiles/weisungen/">
-      <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z" stroke="currentColor" stroke-width="2"/></svg>
+    <a class="tile" href="tiles/weisungen/">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z" stroke="currentColor" stroke-width="2"/>
+      </svg>
       <div class="label">Weisungen</div>
     </a>
 
-    <a class="tile" href="./tiles/unit-uebersicht/">
-      <svg class="icon" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 8h10M7 12h10M7 16h10" stroke="currentColor" stroke-width="2"/></svg>
+    <a class="tile" href="tiles/unit-uebersicht/">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M7 8h10M7 12h10M7 16h10" stroke="currentColor" stroke-width="2"/>
+      </svg>
       <div class="label">Unit-Übersicht</div>
     </a>
 
-    <a class="tile" href="./tiles/kleiderordnung/">
-      <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M8 4l4 2 4-2 4 3-2 4-2-1v10H8V10l-2 1-2-4 4-3z" stroke="currentColor" stroke-width="2"/></svg>
+    <a class="tile" href="tiles/kleiderordnung/">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <path d="M8 4l4 2 4-2 4 3-2 4-2-1v10H8V10l-2 1-2-4 4-3z" stroke="currentColor" stroke-width="2"/>
+      </svg>
       <div class="label">Kleiderordnung</div>
     </a>
 
-    <a class="tile" href="./tiles/grundausruestung/">
+    <a class="tile" href="tiles/grundausruestung/">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
-        <path d="M8 7a4 4 0 0 1 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M7 9h10a2 2 0 0 1 2 2v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-8a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 7a4 4 0 0 1 8 0" stroke="currentColor" stroke-width="2"/>
+        <path d="M7 9h10a2 2 0 0 1 2 2v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-8a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
       </svg>
       <div class="label">Grundausrüstung</div>
     </a>
 
-    <a class="tile" href="./tiles/fahrzeugordnung/">
+    <a class="tile" href="tiles/fahrzeugordnung/">
       <svg class="icon" viewBox="0 0 64 32" fill="none">
-        <path d="M16 12c2-6 6-10 14-10h10c6 0 10 4 12 10l6 4v10H4V16l12-4z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M16 12c2-6 6-10 14-10h10c6 0 10 4 12 10l6 4v10H4V16l12-4z" stroke="currentColor" stroke-width="3"/>
         <circle cx="18" cy="26" r="4" stroke="currentColor" stroke-width="3"/>
         <circle cx="46" cy="26" r="4" stroke="currentColor" stroke-width="3"/>
       </svg>
       <div class="label">Fahrzeugordnung</div>
     </a>
+
   </div>
 </div>
 </body>
