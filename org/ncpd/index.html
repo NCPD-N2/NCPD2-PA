@@ -3,26 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TEST – NCPD</title>
+<title>Narco City Police Department</title>
 
 <style>
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 
-/* ========= FARBFESTLEGUNG ========= */
 :root{
+  /* Blau */
   --accent: 70,130,255;        /* Glow */
   --accentDark: 20,60,160;     /* Hintergrund */
   --tileTop: 18,24,34;
   --tileBot: 8,10,14;
 }
 
-/* ========= TEST: MUSS SICHTBAR SEIN ========= */
-body{
-  outline:10px solid lime !important; /* ← TEST: MUSS grün sein */
-}
-
-/* ========= BASIS ========= */
 body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   color:#fff;
@@ -35,17 +29,14 @@ body{
   background:#050607;
 }
 
-/* ========= FARBDREIECK – SICHTBAR BIS ZUR MITTE ========= */
+/* Farb-Dreieck */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
-
-  /* WICHTIG: mix-blend-mode NORMAL, damit es 100% sichtbar ist */
-  mix-blend-mode: normal;
+  mix-blend-mode:normal;
   opacity:1;
-
   background:
     linear-gradient(148deg,
       rgba(var(--accentDark), .88) 0%,
@@ -56,7 +47,7 @@ body::before{
     );
 }
 
-/* ========= METALLIC LICHT (dezent) ========= */
+/* Metallic/Depth */
 body::after{
   content:"";
   position:fixed;
@@ -73,68 +64,47 @@ body::after{
     );
 }
 
-/* ========= INHALT ========= */
-.panel{
-  position:relative;
-  z-index:2;
-  width:min(1100px,100%);
-  text-align:center;
-}
-
+.panel{position:relative;z-index:2;width:min(1100px,100%);text-align:center}
 .logo{
-  width:150px;
-  height:150px;
-  object-fit:contain;
-  margin-bottom:10px;
+  width:150px;height:150px;object-fit:contain;margin:0 auto 10px;
   filter:drop-shadow(0 18px 38px rgba(0,0,0,.9));
 }
-
-h1{
-  margin:0 0 10px;
-  font-size:26px;
-  letter-spacing:.6px;
-}
+h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
 
 .back{
-  display:inline-block;
-  padding:10px 18px;
-  border-radius:999px;
-  background:rgba(0,0,0,.55);
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:999px;
   border:1px solid rgba(255,255,255,.15);
-  color:#fff;
-  text-decoration:none;
-  font-weight:600;
+  background:rgba(0,0,0,.45);
+  color:#fff;text-decoration:none;font-weight:600;
   margin-bottom:26px;
+  transition:transform .2s ease, background .2s ease;
 }
+.back:hover{transform:translateY(-1px);background:rgba(0,0,0,.55)}
 
-/* ========= GRID ========= */
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(3, 1fr);
   gap:18px;
+  max-width:860px;
+  margin:0 auto;
 }
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);max-width:620px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr;max-width:360px}}
 
-/* ========= KACHELN ========= */
 .tile{
   position:relative;
-  background:linear-gradient(180deg,
-    rgba(var(--tileTop),.9),
-    rgba(var(--tileBot),.9)
-  );
+  background:linear-gradient(180deg, rgba(var(--tileTop),.90), rgba(var(--tileBot),.90));
   border-radius:22px;
   padding:22px;
   text-decoration:none;
   color:#fff;
   border:1px solid rgba(255,255,255,.06);
   box-shadow:0 18px 36px rgba(0,0,0,.65);
-  transition:
-    transform .35s cubic-bezier(.18,.9,.2,1),
-    box-shadow .3s ease,
-    border-color .3s ease;
+  transition:transform .35s cubic-bezier(.18,.9,.2,1), box-shadow .3s ease, border-color .3s ease;
   overflow:hidden;
 }
 
-/* ========= GLOW BEIM HOVER ========= */
 .tile:hover{
   transform:translateY(-8px);
   border-color:rgba(var(--accent),.45);
@@ -144,7 +114,6 @@ h1{
     0 0 64px rgba(var(--accent),.25);
 }
 
-/* farbiger Halo */
 .tile::before{
   content:"";
   position:absolute;
@@ -153,24 +122,21 @@ h1{
   opacity:0;
   transition:opacity .25s ease;
   filter:blur(22px);
-  background:
-    radial-gradient(circle at 30% 25%,
-      rgba(var(--accent),.9),
-      rgba(0,0,0,0) 60%
-    );
+  background:radial-gradient(circle at 30% 25%, rgba(var(--accent),.9), rgba(0,0,0,0) 60%);
 }
 .tile:hover::before{opacity:.9}
 
 .icon{
-  width:46px;
-  height:46px;
+  width:46px;height:46px;
   margin:0 auto 10px;
   display:block;
   opacity:.95;
 }
 
-.label{font-weight:700;font-size:14px}
-.sub{font-size:12px;opacity:.65;margin-top:4px}
+.label{
+  font-weight:700;
+  font-size:14px;
+}
 </style>
 </head>
 
@@ -181,12 +147,12 @@ h1{
   <a class="back" href="../../index.html">← Zurück</a>
 
   <div class="grid">
-    <a class="tile" href="#">
+    <a class="tile" href="../../map/">
       <svg class="icon" viewBox="0 0 24 24" fill="none">
         <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/>
       </svg>
       <div class="label">Einsatzkarte</div>
-      <div class="sub">Interaktive Übersicht</div>
     </a>
 
     <a class="tile" href="#">
@@ -194,7 +160,6 @@ h1{
         <path d="M8 4l4 2 4-2 4 3-2 4-2-1v10H8V10l-2 1-2-4 4-3z" stroke="currentColor" stroke-width="2"/>
       </svg>
       <div class="label">Kleiderordnung</div>
-      <div class="sub">Outfits / Ausrüstung</div>
     </a>
 
     <a class="tile" href="#">
@@ -202,7 +167,31 @@ h1{
         <path d="M14 2H6v20h12V8z" stroke="currentColor" stroke-width="2"/>
       </svg>
       <div class="label">Dokumente</div>
-      <div class="sub">Vorlagen / Akten</div>
+    </a>
+
+    <a class="tile" href="#">
+      <!-- Auto-Icon wie Screenshot -->
+      <svg class="icon" viewBox="0 0 64 32" fill="none">
+        <path d="M16 12c2-6 6-10 14-10h10c6 0 10 4 12 10l6 4v10H4V16l12-4z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="18" cy="26" r="4" stroke="currentColor" stroke-width="3"/>
+        <circle cx="46" cy="26" r="4" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      <div class="label">Fahrzeugordnung</div>
+    </a>
+
+    <a class="tile" href="#">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M7 8h10M7 12h10M7 16h10" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div class="label">Unit Übersicht</div>
+    </a>
+
+    <a class="tile" href="#">
+      <svg class="icon" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div class="label">Weisungen</div>
     </a>
   </div>
 </div>
