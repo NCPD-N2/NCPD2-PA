@@ -7,33 +7,25 @@
 
   <style>
     :root{
-      /* Metallisch dunkler Hintergrund */
       --bg0:#050607;
       --bg1:#0b0e12;
       --bg2:#141820;
 
-      /* matte tiles */
       --tile0:#0b0f16;
       --tile1:#131a24;
       --tileBorder: rgba(255,255,255,.06);
 
-      /* FINAL Farben */
-      --glow-police: rgba(55, 110, 220, 1);     /* Button 1: Blau */
-      --glow-academy: rgba(70, 170, 120, 1);    /* Button 2: Grün */
-      --glow-sd: rgba(210, 170, 45, 0.95);      /* Button 3: Gelb */
+      --glow-police: rgba(55,110,220,1);
+      --glow-academy: rgba(70,170,120,1);
+      --glow-sd: rgba(210,170,45,.95);
 
-      --glow-police-soft: rgba(55, 110, 220, 0.55);
-      --glow-academy-soft: rgba(70, 170, 120, 0.55);
-      --glow-sd-soft: rgba(210, 170, 45, 0.35);
+      --glow-police-soft: rgba(55,110,220,.55);
+      --glow-academy-soft: rgba(70,170,120,.55);
+      --glow-sd-soft: rgba(210,170,45,.35);
 
-      --glow-police-trans: rgba(55, 110, 220, 0.42);
-      --glow-academy-trans: rgba(70, 170, 120, 0.42);
-      --glow-sd-trans: rgba(210, 170, 45, 0.42);
-
-      /* Ebene-2 Tints (als RGB für Background-Mix) */
-      --police-tint: 55, 110, 220;
-      --academy-tint: 70, 170, 120;
-      --sd-tint: 210, 170, 45;
+      --police-tint: 55,110,220;
+      --academy-tint: 70,170,120;
+      --sd-tint: 210,170,45;
     }
 
     *{ box-sizing:border-box; }
@@ -44,584 +36,249 @@
       color:#fff;
     }
 
-    /* ===== App Views ===== */
     body{
       overflow:hidden;
       background:
-        radial-gradient(900px 600px at 25% 15%, rgba(255,255,255,.06), rgba(255,255,255,0) 60%),
-        radial-gradient(900px 600px at 80% 25%, rgba(255,255,255,.04), rgba(255,255,255,0) 65%),
+        radial-gradient(900px 600px at 25% 15%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(900px 600px at 80% 25%, rgba(255,255,255,.04), transparent 65%),
         linear-gradient(135deg, var(--bg2), var(--bg0) 55%, var(--bg1));
     }
 
+    /* ===== Views ===== */
     .view{
       position:fixed;
       inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 32px 18px;
+      padding:32px 18px;
       opacity:0;
       pointer-events:none;
       transform: translateY(10px);
-      transition: opacity 260ms ease, transform 260ms ease;
+      transition:.25s ease;
     }
-
     .view.is-active{
       opacity:1;
       pointer-events:auto;
-      transform: translateY(0);
+      transform:none;
     }
 
     .container{
       text-align:center;
       max-width:1100px;
       width:100%;
-      position:relative;
-      z-index:3;
     }
 
-    h1{
-      font-size:34px;
-      letter-spacing:1px;
-      margin:0 0 60px;
-    }
+    h1{ font-size:34px; margin:0 0 60px; }
 
-    footer{
-      margin-top:55px;
-      font-size:13px;
-      opacity:.6;
-    }
-
-    /* ===== Ebene 1: Org Buttons ===== */
+    /* ===== Ebene 1 ===== */
     .buttons{
       display:flex;
-      justify-content:center;
       gap:40px;
+      justify-content:center;
       flex-wrap:wrap;
     }
 
     .org-card{
-      position:relative;
       width:260px;
       height:260px;
       border-radius:26px;
-      cursor:pointer;
-
-      background: linear-gradient(180deg, var(--tile1), var(--tile0));
-      box-shadow:
-        0 18px 40px rgba(0,0,0,.75),
-        inset 0 0 0 1px var(--tileBorder);
-
+      background:linear-gradient(180deg,var(--tile1),var(--tile0));
       display:flex;
       align-items:center;
       justify-content:center;
-
-      transform-style:preserve-3d;
-      transition:
-        transform .6s cubic-bezier(.18,.9,.2,1),
-        box-shadow .6s cubic-bezier(.18,.9,.2,1),
-        filter .4s ease;
-
-      user-select:none;
-      -webkit-tap-highlight-color:transparent;
-      overflow: visible;
+      cursor:pointer;
+      position:relative;
+      box-shadow:0 18px 40px rgba(0,0,0,.75);
+      transition:.6s cubic-bezier(.18,.9,.2,1);
     }
 
     .org-card img{
       max-width:80%;
-      max-height:80%;
-      object-fit:contain;
-      filter: drop-shadow(0 16px 30px rgba(0,0,0,.9));
-      transform: translateZ(26px);
+      filter:drop-shadow(0 16px 30px rgba(0,0,0,.9));
     }
 
-    /* Hover Glow: rund, kein Backplate */
     .org-card::before{
       content:"";
       position:absolute;
-      left:50%;
-      top:50%;
-
-      width: 150%;
-      height: 150%;
-
-      transform: translate(-50%, -50%) scale(0.78);
-      border-radius: 9999px;
-
-      pointer-events:none;
+      width:150%;
+      height:150%;
+      border-radius:999px;
       opacity:0;
-      filter: blur(34px);
-      mix-blend-mode: screen;
+      filter:blur(34px);
+      mix-blend-mode:screen;
+      transition:.3s;
     }
 
-    .org-card.police::before{
-      background: radial-gradient(circle, var(--glow-police) 0%, rgba(0,0,0,0) 62%);
-    }
-    .org-card.academy::before{
-      background: radial-gradient(circle, var(--glow-academy) 0%, rgba(0,0,0,0) 62%);
-    }
-    .org-card.sd::before{
-      background: radial-gradient(circle, var(--glow-sd) 0%, rgba(0,0,0,0) 62%);
-    }
+    .police::before{ background:radial-gradient(circle,var(--glow-police),transparent 62%); }
+    .academy::before{ background:radial-gradient(circle,var(--glow-academy),transparent 62%); }
+    .sd::before{ background:radial-gradient(circle,var(--glow-sd),transparent 62%); }
 
-    .org-card:hover{
-      transform: translateY(-18px) rotateX(6deg) scale(1.045);
-      filter: brightness(1.06);
-      box-shadow:
-        0 60px 110px rgba(0,0,0,.92),
-        inset 0 0 0 1px rgba(255,255,255,.08);
-    }
+    .org-card:hover{ transform:translateY(-18px) scale(1.045); }
+    .org-card:hover::before{ opacity:1; }
 
-    @keyframes roundPulse {
-      0%{ opacity:.70; transform: translate(-50%, -50%) scale(0.78); filter: blur(26px); }
-      50%{ opacity:1;   transform: translate(-50%, -50%) scale(1.00); filter: blur(46px); }
-      100%{opacity:.70; transform: translate(-50%, -50%) scale(0.78); filter: blur(26px); }
-    }
-    .org-card:hover::before{
-      opacity:1;
-      animation: roundPulse 1.65s ease-in-out infinite;
-    }
-
-    .org-card.police:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-police-soft); }
-    .org-card.academy:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-academy-soft); }
-    .org-card.sd:hover{ box-shadow: 0 60px 110px rgba(0,0,0,.92), 0 0 170px var(--glow-sd-soft); }
-
-    .org-card:active{
-      transform: translateY(-10px) scale(1.02);
-      filter: brightness(.98);
-    }
-
-    /* ===== Ebene 2: Org Panels ===== */
-    .panel{
-      width:min(1100px, 100%);
-      padding: 0 6px;
-      position:relative;
-      z-index:2;
-    }
-
-    .panel-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 28px;
-    }
-
-    .back-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      cursor:pointer;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(10,12,16,.55);
-      color:#fff;
-      font-weight:600;
-      letter-spacing:.2px;
-      transition: transform .2s ease, background .2s ease, border-color .2s ease;
-      user-select:none;
-    }
-    .back-btn:hover{
-      transform: translateY(-1px);
-      background: rgba(10,12,16,.72);
-      border-color: rgba(255,255,255,.14);
-    }
-
-    .panel-logo{
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-      opacity: .92;
-      filter:
-        drop-shadow(0 10px 22px rgba(0,0,0,.8))
-        contrast(1.05)
-        brightness(1.08);
-    }
-
-    .panel-title{
-      font-size: 28px;
-      letter-spacing: .8px;
-      margin: 0;
-      flex: 1;
-      text-align:center;
-    }
-    .panel-spacer{ width: 120px; } /* symmetrie rechts */
-
-    /* Metallischer, eingefärbter Hintergrund pro Org */
+    /* ===== Ebene 2 ===== */
     .org-bg{
       position:absolute;
       inset:0;
-      z-index:0;
       pointer-events:none;
     }
 
     .org-bg[data-tint="police"]{
       background:
-        radial-gradient(900px 600px at 25% 15%, rgba(var(--police-tint), .16), rgba(0,0,0,0) 60%),
-        radial-gradient(900px 600px at 80% 25%, rgba(var(--police-tint), .10), rgba(0,0,0,0) 65%),
-        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
-        linear-gradient(135deg, rgba(var(--police-tint), .10), var(--bg0) 55%, var(--bg1));
+        radial-gradient(900px 600px at 30% 20%, rgba(var(--police-tint),.18), transparent 60%),
+        linear-gradient(135deg, rgba(var(--police-tint),.12), var(--bg0));
     }
     .org-bg[data-tint="academy"]{
       background:
-        radial-gradient(900px 600px at 25% 15%, rgba(var(--academy-tint), .16), rgba(0,0,0,0) 60%),
-        radial-gradient(900px 600px at 80% 25%, rgba(var(--academy-tint), .10), rgba(0,0,0,0) 65%),
-        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
-        linear-gradient(135deg, rgba(var(--academy-tint), .10), var(--bg0) 55%, var(--bg1));
+        radial-gradient(900px 600px at 30% 20%, rgba(var(--academy-tint),.18), transparent 60%),
+        linear-gradient(135deg, rgba(var(--academy-tint),.12), var(--bg0));
     }
     .org-bg[data-tint="sd"]{
       background:
-        radial-gradient(900px 600px at 25% 15%, rgba(var(--sd-tint), .16), rgba(0,0,0,0) 60%),
-        radial-gradient(900px 600px at 80% 25%, rgba(var(--sd-tint), .10), rgba(0,0,0,0) 65%),
-        radial-gradient(1100px 700px at 45% 85%, rgba(255,255,255,.035), rgba(0,0,0,0) 60%),
-        linear-gradient(135deg, rgba(var(--sd-tint), .10), var(--bg0) 55%, var(--bg1));
+        radial-gradient(900px 600px at 30% 20%, rgba(var(--sd-tint),.18), transparent 60%),
+        linear-gradient(135deg, rgba(var(--sd-tint),.12), var(--bg0));
     }
 
+    .panel{
+      max-width:1100px;
+      width:100%;
+      position:relative;
+      z-index:2;
+      text-align:center;
+    }
+
+    /* ===== Neues Header Layout ===== */
+    .panel-logo{
+      width:120px;
+      height:120px;
+      object-fit:contain;
+      margin:0 auto 14px;
+      filter:
+        drop-shadow(0 18px 35px rgba(0,0,0,.85))
+        brightness(1.08);
+    }
+
+    .panel-title{
+      font-size:30px;
+      margin:0 0 18px;
+      letter-spacing:.8px;
+    }
+
+    .back-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(10,12,16,.6);
+      cursor:pointer;
+      margin-bottom:26px;
+    }
+
+    /* ===== Tiles ===== */
     .tile-grid{
       display:grid;
-      grid-template-columns: repeat(4, minmax(160px, 1fr));
-      gap: 18px;
-    }
-
-    @media (max-width: 900px){
-      .tile-grid{ grid-template-columns: repeat(2, minmax(160px, 1fr)); }
-      .panel-spacer{ width: 0; }
-      .panel-title{ text-align:left; }
-      .panel-head{ justify-content:flex-start; flex-wrap:wrap; }
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
     }
 
     .tile{
-      position:relative;
-      border-radius: 22px;
-      padding: 22px 16px 18px;
+      border-radius:22px;
+      padding:22px;
+      background:linear-gradient(180deg,rgba(18,24,34,.85),rgba(10,12,16,.85));
       cursor:pointer;
-      background: linear-gradient(180deg, rgba(18,24,34,.86), rgba(10,12,16,.86));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 18px 40px rgba(0,0,0,.55);
-      transition: transform .35s cubic-bezier(.18,.9,.2,1), border-color .25s ease, filter .25s ease;
-      user-select:none;
-      overflow:hidden;
+      transition:.3s;
     }
-
-    .tile:hover{
-      transform: translateY(-10px);
-      border-color: rgba(255,255,255,.14);
-      filter: brightness(1.05);
-    }
-
-    .tile::before{
-      content:"";
-      position:absolute;
-      inset:-18px;
-      border-radius: 28px;
-      opacity:0;
-      filter: blur(26px);
-      mix-blend-mode: screen;
-      transition: opacity .25s ease;
-      pointer-events:none;
-    }
-
-    .panel[data-org="police"] .tile::before{
-      background: radial-gradient(circle at 30% 20%, var(--glow-police) 0%, rgba(0,0,0,0) 58%);
-    }
-    .panel[data-org="academy"] .tile::before{
-      background: radial-gradient(circle at 30% 20%, var(--glow-academy) 0%, rgba(0,0,0,0) 58%);
-    }
-    .panel[data-org="sd"] .tile::before{
-      background: radial-gradient(circle at 30% 20%, var(--glow-sd) 0%, rgba(0,0,0,0) 58%);
-    }
-    .tile:hover::before{ opacity:.9; }
+    .tile:hover{ transform:translateY(-10px); }
 
     .icon{
-      width: 46px;
-      height: 46px;
-      margin: 0 auto 12px;
-      opacity: .92;
+      width:46px;
+      height:46px;
+      margin-bottom:12px;
     }
 
-    .label{
-      font-weight: 750;
-      letter-spacing: .4px;
-      font-size: 14px;
-      opacity: .95;
-    }
+    .label{ font-weight:700; }
+    .sub{ font-size:12px; opacity:.65; }
 
-    .sub{
-      font-size: 12px;
-      opacity: .65;
-      margin-top: 6px;
-    }
-
-    /* ===== Click transition overlay ===== */
-    .transition{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:0;
-      transition: opacity .28s ease;
-      z-index:9999;
-    }
-    body.is-transitioning .transition{ opacity:1; }
-
-    .transition.police{ background: radial-gradient(circle, var(--glow-police-trans), rgba(5,6,7,.99)); }
-    .transition.academy{ background: radial-gradient(circle, var(--glow-academy-trans), rgba(5,6,7,.99)); }
-    .transition.sd{ background: radial-gradient(circle, var(--glow-sd-trans), rgba(5,6,7,.99)); }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none !important; transition:none !important; }
+    @media(max-width:900px){
+      .tile-grid{ grid-template-columns:repeat(2,1fr); }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="transition" id="transition"></div>
-
-  <!-- ===== Ebene 1 ===== -->
-  <section class="view is-active" id="view-home" aria-label="Ebene 1">
-    <div class="container">
-      <h1>Narco City Exekutive Panel</h1>
-
-      <div class="buttons">
-        <div class="org-card police" data-org="police" role="button" tabindex="0" aria-label="NCPD öffnen">
-          <img src="logos/ncpd.png" alt="NCPD">
-        </div>
-
-        <div class="org-card academy" data-org="academy" role="button" tabindex="0" aria-label="Academy öffnen">
-          <img src="logos/academy.png" alt="Academy">
-        </div>
-
-        <div class="org-card sd" data-org="sd" role="button" tabindex="0" aria-label="NCSD öffnen">
-          <img src="logos/ncsd.png?v=2" alt="NCSD">
-        </div>
-      </div>
-
-      <footer>© Narco City RP</footer>
+<!-- ===== Ebene 1 ===== -->
+<section class="view is-active" id="home">
+  <div class="container">
+    <h1>Narco City Exekutive Panel</h1>
+    <div class="buttons">
+      <div class="org-card police" data-org="police"><img src="logos/ncpd.png"></div>
+      <div class="org-card academy" data-org="academy"><img src="logos/academy.png"></div>
+      <div class="org-card sd" data-org="sd"><img src="logos/ncsd.png?v=2"></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== Ebene 2: Police ===== -->
-  <section class="view" id="view-police" aria-label="Ebene 2 Police">
-    <div class="org-bg" data-tint="police"></div>
-    <div class="panel" data-org="police">
-      <div class="panel-head">
-        <div class="back-btn" data-back>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Zurück
-        </div>
-
-        <img class="panel-logo" src="logos/ncpd.png" alt="NCPD Logo">
-
-        <h2 class="panel-title">NCPD</h2>
-        <div class="panel-spacer"></div>
-      </div>
-
-      <div class="tile-grid">
-        <div class="tile" data-link="map.html">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Karte</div>
-          <div class="sub">Interaktive Übersicht</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Umkleide</div>
-          <div class="sub">Outfits / Ausrüstung</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Dokumente</div>
-          <div class="sub">Vorlagen / Akten</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
-            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
-          <div class="label">Fahrzeuge</div>
-          <div class="sub">Flotte / Codes</div>
-        </div>
-      </div>
+<!-- ===== Police ===== -->
+<section class="view" id="police">
+  <div class="org-bg" data-tint="police"></div>
+  <div class="panel">
+    <img class="panel-logo" src="logos/ncpd.png">
+    <h2 class="panel-title">NCPD</h2>
+    <div class="back-btn" data-back>← Zurück</div>
+    <div class="tile-grid">
+      <div class="tile"><div class="label">Karte</div><div class="sub">Übersicht</div></div>
+      <div class="tile"><div class="label">Umkleide</div><div class="sub">Outfits</div></div>
+      <div class="tile"><div class="label">Dokumente</div><div class="sub">Akten</div></div>
+      <div class="tile"><div class="label">Fahrzeuge</div><div class="sub">Flotte</div></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== Ebene 2: Academy ===== -->
-  <section class="view" id="view-academy" aria-label="Ebene 2 Academy">
-    <div class="org-bg" data-tint="academy"></div>
-    <div class="panel" data-org="academy">
-      <div class="panel-head">
-        <div class="back-btn" data-back>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Zurück
-        </div>
-
-        <img class="panel-logo" src="logos/academy.png" alt="Academy Logo">
-
-        <h2 class="panel-title">Executive Education Academy</h2>
-        <div class="panel-spacer"></div>
-      </div>
-
-      <div class="tile-grid">
-        <div class="tile" data-link="map.html">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Karte</div>
-          <div class="sub">Interaktive Übersicht</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Umkleide</div>
-          <div class="sub">Outfits / Ausrüstung</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Dokumente</div>
-          <div class="sub">Vorlagen / Akten</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
-            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
-          <div class="label">Fahrzeuge</div>
-          <div class="sub">Flotte / Codes</div>
-        </div>
-      </div>
+<!-- Academy -->
+<section class="view" id="academy">
+  <div class="org-bg" data-tint="academy"></div>
+  <div class="panel">
+    <img class="panel-logo" src="logos/academy.png">
+    <h2 class="panel-title">Executive Education Academy</h2>
+    <div class="back-btn" data-back>← Zurück</div>
+    <div class="tile-grid">
+      <div class="tile"><div class="label">Karte</div></div>
+      <div class="tile"><div class="label">Umkleide</div></div>
+      <div class="tile"><div class="label">Dokumente</div></div>
+      <div class="tile"><div class="label">Fahrzeuge</div></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== Ebene 2: SD ===== -->
-  <section class="view" id="view-sd" aria-label="Ebene 2 SD">
-    <div class="org-bg" data-tint="sd"></div>
-    <div class="panel" data-org="sd">
-      <div class="panel-head">
-        <div class="back-btn" data-back>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Zurück
-        </div>
-
-        <img class="panel-logo" src="logos/ncsd.png?v=2" alt="NCSD Logo">
-
-        <h2 class="panel-title">NCSD</h2>
-        <div class="panel-spacer"></div>
-      </div>
-
-      <div class="tile-grid">
-        <div class="tile" data-link="map.html">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18l-6 2V6l6-2 6 2 6-2v14l-6 2-6-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Karte</div>
-          <div class="sub">Interaktive Übersicht</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M7 4h10l1 4H6l1-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M6 8v12h12V8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Umkleide</div>
-          <div class="sub">Outfits / Ausrüstung</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M8 13h8M8 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="label">Dokumente</div>
-          <div class="sub">Vorlagen / Akten</div>
-        </div>
-
-        <div class="tile" data-link="#">
-          <svg class="icon" viewBox="0 0 24 24" fill="none">
-            <path d="M3 16l1-4 2-2h12l2 2 1 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M7 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" stroke="currentColor" stroke-width="2"/>
-            <path d="M6 10l2-4h8l2 4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          </svg>
-          <div class="label">Fahrzeuge</div>
-          <div class="sub">Flotte / Codes</div>
-        </div>
-      </div>
+<!-- SD -->
+<section class="view" id="sd">
+  <div class="org-bg" data-tint="sd"></div>
+  <div class="panel">
+    <img class="panel-logo" src="logos/ncsd.png?v=2">
+    <h2 class="panel-title">NCSD</h2>
+    <div class="back-btn" data-back>← Zurück</div>
+    <div class="tile-grid">
+      <div class="tile"><div class="label">Karte</div></div>
+      <div class="tile"><div class="label">Umkleide</div></div>
+      <div class="tile"><div class="label">Dokumente</div></div>
+      <div class="tile"><div class="label">Fahrzeuge</div></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <script>
-    const views = {
-      home: document.getElementById('view-home'),
-      police: document.getElementById('view-police'),
-      academy: document.getElementById('view-academy'),
-      sd: document.getElementById('view-sd'),
-    };
-
-    function showView(name){
-      Object.values(views).forEach(v => v.classList.remove('is-active'));
-      views[name].classList.add('is-active');
-    }
-
-    // Ebene 1 -> Ebene 2
-    document.querySelectorAll('.org-card').forEach(card => {
-      const org = card.getAttribute('data-org');
-      const open = () => showView(org);
-
-      card.addEventListener('click', open);
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
-      });
-    });
-
-    // Zurück Buttons
-    document.querySelectorAll('[data-back]').forEach(btn => {
-      btn.addEventListener('click', () => showView('home'));
-    });
-
-    // Tiles
-    document.querySelectorAll('.tile').forEach(tile => {
-      tile.addEventListener('click', () => {
-        const link = tile.getAttribute('data-link');
-        if (!link || link === '#') return;
-        window.location.href = link;
-      });
-    });
-  </script>
+<script>
+  const views={home,police,academy,sd};
+  document.querySelectorAll('.org-card').forEach(c=>{
+    c.onclick=()=>{Object.values(views).forEach(v=>v.classList.remove('is-active'));views[c.dataset.org].classList.add('is-active');}
+  });
+  document.querySelectorAll('[data-back]').forEach(b=>{
+    b.onclick=()=>{Object.values(views).forEach(v=>v.classList.remove('is-active'));home.classList.add('is-active');}
+  });
+</script>
 
 </body>
 </html>
