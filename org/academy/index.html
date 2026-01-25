@@ -10,7 +10,6 @@
 html,body{height:100%;margin:0}
 
 :root{
-  /* Academy Grün */
   --accent: 70,170,120;
   --accentDark: 10,110,60;
   --tileTop: 18,24,34;
@@ -26,7 +25,10 @@ body{
   align-items:flex-start;
   padding:14px 18px 28px;
   position:relative;
-  background:linear-gradient(135deg,#0b1019,#050607 55%,#0b0e12);
+
+  background:
+    radial-gradient(1400px 900px at 70% 40%, rgba(0,0,0,.55), rgba(0,0,0,0) 70%),
+    linear-gradient(135deg,#0b1019,#050607 55%,#0b0e12);
 }
 
 body::before{
@@ -34,18 +36,26 @@ body::before{
   position:fixed;
   inset:0;
   pointer-events:none;
+  -webkit-clip-path: polygon(0 0, 100% 0, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+
   background:
     linear-gradient(135deg,
-      rgba(var(--accentDark),.95) 0%,
-      rgba(var(--accentDark),.95) 46%,
-      rgba(0,0,0,0) 66%
+      rgba(var(--accentDark), .98) 0%,
+      rgba(var(--accentDark), .86) 45%,
+      rgba(var(--accentDark), .68) 100%
     ),
     linear-gradient(115deg,
-      rgba(255,255,255,.06) 0%,
-      rgba(255,255,255,0) 35%,
-      rgba(255,255,255,.04) 60%,
-      rgba(255,255,255,0) 85%
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,0) 28%,
+      rgba(255,255,255,.08) 52%,
+      rgba(255,255,255,0) 78%
+    ),
+    linear-gradient(160deg,
+      rgba(0,0,0,.20) 0%,
+      rgba(0,0,0,0) 55%
     );
+
   mix-blend-mode:multiply;
   opacity:1;
 }
@@ -55,9 +65,10 @@ body::after{
   position:fixed;
   inset:0;
   pointer-events:none;
+
   background:
     radial-gradient(1200px 900px at 50% 110%, rgba(0,0,0,.78), rgba(0,0,0,0) 72%),
-    radial-gradient(900px 650px at 20% 22%, rgba(var(--accent),.35), rgba(0,0,0,0) 58%);
+    radial-gradient(900px 650px at 18% 18%, rgba(var(--accent),.22), rgba(0,0,0,0) 60%);
   mix-blend-mode:screen;
   opacity:1;
 }
@@ -95,8 +106,8 @@ h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
   border-color:rgba(255,255,255,.14);
   box-shadow:
     0 24px 55px rgba(0,0,0,.65),
-    0 0 36px rgba(var(--accent), .35),
-    0 0 72px rgba(var(--accent), .18);
+    0 0 40px rgba(var(--accent), .40),
+    0 0 90px rgba(var(--accent), .22);
   filter:brightness(1.06);
 }
 .tile::before{
@@ -107,8 +118,8 @@ h1{margin:0 0 10px;font-size:26px;letter-spacing:.6px}
   opacity:0;
   transition:opacity .22s ease;
   pointer-events:none;
-  filter:blur(20px);
-  background:radial-gradient(circle at 30% 20%, rgba(var(--accent),.85) 0%, rgba(0,0,0,0) 62%);
+  filter:blur(22px);
+  background:radial-gradient(circle at 30% 20%, rgba(var(--accent),.95) 0%, rgba(0,0,0,0) 62%);
 }
 .tile:hover::before{opacity:.95}
 
